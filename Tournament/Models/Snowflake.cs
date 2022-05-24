@@ -46,4 +46,19 @@ public class Snowflake
             2
         ).ToString();
     }
+
+    /// <summary>
+    /// Get the timestamp from a snowflake string
+    /// </summary>
+    public static DateTime GetTimestamp(string snowflake)
+    {
+        StringBuilder snowflakeBits = new();
+
+        foreach (byte b in BitConverter.GetBytes(Convert.ToUInt64(snowflake)))
+            snowflakeBits.Insert(0, Convert.ToString(b, 2).PadLeft(8, '0'));
+
+        ulong milliseconds = Convert.ToUInt64(snowflakeBits.ToString()[..TimestampBitArrayLength], 2);
+
+        return Epoch.AddMilliseconds(milliseconds);
+    }
 }
