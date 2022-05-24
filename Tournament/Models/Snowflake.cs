@@ -48,8 +48,28 @@ public class Snowflake
     }
 
     /// <summary>
+    /// Checks if a given snowflake string is valid
+    /// </summary>
+    public static bool Validate(string snowflake)
+    {
+        try
+        {
+            GetTimestamp(snowflake);
+            // If it cannot get the timestamp then it's probably invalid (but this probably isn't perfect)
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
     /// Get the timestamp from a snowflake string
     /// </summary>
+    /// <exception cref="FormatException"></exception>
+    /// <exception cref="OverflowException"></exception>
     public static DateTime GetTimestamp(string snowflake)
     {
         StringBuilder snowflakeBits = new();

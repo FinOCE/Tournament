@@ -20,6 +20,16 @@ public class SnowflakeTest
     }
 
     [TestMethod]
+    public void ValidateTest()
+    {
+        Assert.IsTrue(Snowflake.Validate("0"));
+        Assert.IsTrue(Snowflake.Validate("132271570944000001"));
+        Assert.IsFalse(Snowflake.Validate("99999999999999999999999"));
+        Assert.IsFalse(Snowflake.Validate("a"));
+        Assert.IsFalse(Snowflake.Validate(""));
+    }
+
+    [TestMethod]
     public void GetTimestampTest()
     {
         DateTime dateTime = Snowflake.Epoch.AddYears(1);
@@ -30,5 +40,7 @@ public class SnowflakeTest
         Snowflake snowflake = new(dateTime, workerIdBits, processIdBits, serialBits);
 
         Assert.AreEqual(dateTime, Snowflake.GetTimestamp(snowflake.ToString()));
+
+        // TODO: Test invalid timestamps
     }
 }
