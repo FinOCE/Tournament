@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Text;
-
-namespace Tournament.Utils;
+﻿namespace Tournament.Utils;
 
 /// <summary>
 /// A unique identifier as described by https://discord.com/developers/docs/reference#snowflakes
