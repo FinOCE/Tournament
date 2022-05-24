@@ -1,4 +1,4 @@
-namespace Test;
+namespace Test.Models;
 
 [TestClass]
 public class UserTest

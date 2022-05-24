@@ -1,6 +1,4 @@
-﻿using Tournament.Utils;
-
-namespace Test;
+﻿namespace Test.Models;
 
 [TestClass]
 public class SnowflakeTest
@@ -19,14 +17,5 @@ public class SnowflakeTest
 
         Snowflake snowflake2 = new(Snowflake.Epoch.AddYears(1), workerIdBits, processIdBits, serialBits);
         Assert.AreEqual("132271570944000001", snowflake2.ToString());
-    }
-
-    [TestMethod]
-    public void ConvertBitsToStringTest()
-    {
-        Assert.AreEqual("", Snowflake.ConvertBitsToString(new BitArray(0)));
-        Assert.AreEqual("0", Snowflake.ConvertBitsToString(new BitArray(1)));
-        Assert.AreEqual("00", Snowflake.ConvertBitsToString(new BitArray(2)));
-        Assert.AreEqual("0101", Snowflake.ConvertBitsToString(new BitArray(new bool[] {true, false, true, false})));
     }
 }

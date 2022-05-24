@@ -1,4 +1,4 @@
-﻿namespace Tournament.Utils;
+﻿namespace Tournament.Models;
 
 /// <summary>
 /// A unique identifier as described by https://discord.com/developers/docs/reference#snowflakes
@@ -39,24 +39,11 @@ public class Snowflake
 
         // Return snowflake string
         return Convert.ToUInt64(
-            ConvertBitsToString(timestampBits)
-                + ConvertBitsToString(WorkerId)
-                + ConvertBitsToString(ProcessId)
-                + ConvertBitsToString(Serial),
+            BitUtil.ConvertBitsToString(timestampBits)
+                + BitUtil.ConvertBitsToString(WorkerId)
+                + BitUtil.ConvertBitsToString(ProcessId)
+                + BitUtil.ConvertBitsToString(Serial),
             2
         ).ToString();
-    }
-
-    /// <summary>
-    /// Convert a BitArray into a string
-    /// </summary>
-    public static string ConvertBitsToString(BitArray bits)
-    {
-        StringBuilder result = new();
-
-        for (int i = 0; i < bits.Length; i++)
-            result.Insert(0, bits.Get(i) ? "1" : "0");
-
-        return result.ToString();
     }
 }
