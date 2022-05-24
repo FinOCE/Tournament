@@ -11,23 +11,23 @@ public class Snowflake
     public static readonly int ProcessIdBitArrayLength = 5;
     public static readonly int SerialBitArrayLength = 12;
 
-    private DateTime Timestamp { get; set; }
-    private BitArray WorkerId { get; set; }
-    private BitArray ProcessId { get; set; }
-    private BitArray Serial { get; set; }
+    public DateTime Timestamp { get; init; }
+    private BitArray _WorkerId { get; init; }
+    private BitArray _ProcessId { get; init; }
+    private BitArray _Serial { get; init; }
 
     public Snowflake(DateTime timestamp, BitArray workerIdBits, BitArray processIdBits, BitArray serialBits)
     {
         Timestamp = timestamp;
 
-        WorkerId = workerIdBits;
-        WorkerId.Length = WorkerIdBitArrayLength;
+        _WorkerId = workerIdBits;
+        _WorkerId.Length = WorkerIdBitArrayLength;
 
-        ProcessId = processIdBits;
-        ProcessId.Length = ProcessIdBitArrayLength;
+        _ProcessId = processIdBits;
+        _ProcessId.Length = ProcessIdBitArrayLength;
 
-        Serial = serialBits;
-        Serial.Length = SerialBitArrayLength;
+        _Serial = serialBits;
+        _Serial.Length = SerialBitArrayLength;
     }
 
     public override string ToString()
@@ -40,9 +40,9 @@ public class Snowflake
         // Return snowflake string
         return Convert.ToUInt64(
             BitUtil.ConvertBitsToString(timestampBits)
-                + BitUtil.ConvertBitsToString(WorkerId)
-                + BitUtil.ConvertBitsToString(ProcessId)
-                + BitUtil.ConvertBitsToString(Serial),
+                + BitUtil.ConvertBitsToString(_WorkerId)
+                + BitUtil.ConvertBitsToString(_ProcessId)
+                + BitUtil.ConvertBitsToString(_Serial),
             2
         ).ToString();
     }

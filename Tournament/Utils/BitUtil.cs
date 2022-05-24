@@ -17,4 +17,29 @@ public static class BitUtil
 
         return result.ToString();
     }
+
+    /// <summary>
+    /// Add one to a BitArray
+    /// </summary>
+    public static BitArray AddOne(BitArray bitArray)
+    {
+        bool finished = false;
+
+        for (int i = 0; i < bitArray.Length; i++)
+        {
+            if (!bitArray[i])
+            {
+                bitArray.Set(i, true);
+                finished = true;
+                break;
+            }
+            
+            bitArray[i] = false;
+        }
+
+        if (!finished)
+            bitArray = new(bitArray.Length);
+
+        return bitArray;
+    }
 }
