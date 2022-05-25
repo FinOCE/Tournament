@@ -5,11 +5,16 @@
 /// </summary>
 public class User
 {
+    public static readonly int UsernameMinLength = 3;
+    public static readonly int UsernameMaxLength = 16;
+    public static readonly Regex UsernameInvalidRegex = new(@"[^\w-. ]");
+
     public string Id { get; init; }
     public string Username { get; private set; }
     public DateTime Timestamp { get; init; }
     private int _Permissions { get; set; }
 
+    /// <exception cref="ArgumentException"></exception>
     public User(string id, string username, int permissions = 0)
     {
         // Validate arguments
@@ -34,10 +39,10 @@ public class User
         // Validate username
         username = username.Trim();
 
-        if (username.Length > 16 || username.Length < 3)
+        if (username.Length > UsernameMaxLength || username.Length < UsernameMinLength)
             return false;
 
-        if (new Regex(@"[^\w-. ]").IsMatch(username))
+        if (UsernameInvalidRegex.IsMatch(username))
             return false;
 
         // Update username
@@ -73,5 +78,4 @@ public class User
 public enum UserPermission
 {
     Administrator = 1
-    // Additional permissions can be added as as 2^x
 }
