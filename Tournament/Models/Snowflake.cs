@@ -1,4 +1,4 @@
-﻿namespace Tournament.Models;
+﻿namespace API.Models;
 
 /// <summary>
 /// A unique identifier as described by https://discord.com/developers/docs/reference#snowflakes

@@ -1,4 +1,4 @@
-﻿namespace Tournament.Services;
+﻿namespace API.Services;
 
 public class SnowflakeService
 {

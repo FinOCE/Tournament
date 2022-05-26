@@ -1,4 +1,4 @@
-﻿namespace Test.Models;
+﻿namespace API.Tests.Unit.Models;
 
 [TestClass]
 public class TeamTest

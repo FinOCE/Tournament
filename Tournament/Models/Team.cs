@@ -1,4 +1,4 @@
-﻿namespace Tournament.Models;
+﻿namespace API.Models;
 
 /// <summary>
 /// A team that comprises of members

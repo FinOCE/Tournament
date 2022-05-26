@@ -1,4 +1,4 @@
-﻿namespace Test.Utils;
+﻿namespace API.Tests.Unit.Utils;
 
 [TestClass]
 public class BitUtilTest
@@ -15,7 +15,7 @@ public class BitUtilTest
     [TestMethod]
     public void AddOneTest()
     {
-        BitArray bitArray = new BitArray(new bool[] {false, false, false});
+        BitArray bitArray = new(new bool[] {false, false, false});
         Assert.AreEqual("001", BitUtil.ConvertBitsToString(BitUtil.AddOne(bitArray)));
         Assert.AreEqual("010", BitUtil.ConvertBitsToString(BitUtil.AddOne(bitArray)));
         Assert.AreEqual("011", BitUtil.ConvertBitsToString(BitUtil.AddOne(bitArray)));

@@ -1,4 +1,4 @@
-﻿namespace Tournament.Utils;
+﻿namespace API.Utils;
 
 /// <summary>
 /// Helper utility for bit-related tasks

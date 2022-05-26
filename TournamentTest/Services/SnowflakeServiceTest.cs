@@ -1,4 +1,4 @@
-﻿namespace Test.Services;
+﻿namespace API.Tests.Unit.Services;
 
 [TestClass]
 public class SnowflakeServiceTest
