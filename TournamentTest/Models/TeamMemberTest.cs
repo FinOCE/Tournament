@@ -11,7 +11,7 @@ public class TeamMemberTest
         Snowflake snowflake2 = snowflakeService.Generate();
 
         User user = new(snowflake1.ToString(), "Username");
-        Team team = new(snowflake2.ToString(), "Name");
+        Team team = new(snowflake2.ToString(), "Name", null, false);
         TeamMember member = new(user, team, (int)TeamRole.Substitute);
 
         Assert.IsTrue(member.HasRole(TeamRole.Substitute));
@@ -26,7 +26,7 @@ public class TeamMemberTest
         Snowflake snowflake2 = snowflakeService.Generate();
 
         User user = new(snowflake1.ToString(), "Username");
-        Team team = new(snowflake2.ToString(), "Name");
+        Team team = new(snowflake2.ToString(), "Name", null, false);
         TeamMember member = new(user, team);
 
         Assert.IsTrue(member.HasRole(TeamRole.Player));
@@ -44,7 +44,7 @@ public class TeamMemberTest
         Snowflake snowflake2 = snowflakeService.Generate();
 
         User user = new(snowflake1.ToString(), "Username");
-        Team team = new(snowflake2.ToString(), "Name");
+        Team team = new(snowflake2.ToString(), "Name", null, false);
         TeamMember member = new(user, team);
         member.AddRole(TeamRole.Captain);
 
@@ -63,7 +63,7 @@ public class TeamMemberTest
         Snowflake snowflake2 = snowflakeService.Generate();
 
         User user = new(snowflake1.ToString(), "Username");
-        Team team = new(snowflake2.ToString(), "Name");
+        Team team = new(snowflake2.ToString(), "Name", null, false);
 
         TeamMember member = new(user, team);
         Assert.IsTrue(member.HasPermission(TeamRolePermission.Substitute));

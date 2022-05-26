@@ -10,15 +10,15 @@ public class TeamTest
         Snowflake snowflake = snowflakeService.Generate();
 
         Assert.ThrowsException<ArgumentException>(() => {
-            Team team = new("", "");
+            Team team = new("", "", null, false);
         });
         Assert.ThrowsException<ArgumentException>(() => {
-            Team team = new("", "Name");
+            Team team = new("", "Name", null, false);
         });
         Assert.ThrowsException<ArgumentException>(() => {
-            Team team = new(snowflake.ToString(), "");
+            Team team = new(snowflake.ToString(), "", null, false);
         });
-        Assert.IsInstanceOfType(new Team(snowflake.ToString(), "Name"), typeof(Team));
+        Assert.IsInstanceOfType(new Team(snowflake.ToString(), "Name", null, false), typeof(Team));
     }
 
     [TestMethod]
@@ -27,7 +27,7 @@ public class TeamTest
         SnowflakeService snowflakeService = new();
         Snowflake snowflake = snowflakeService.Generate();
 
-        Team team = new(snowflake.ToString(), "Team");
+        Team team = new(snowflake.ToString(), "Team", null, false);
 
         Assert.IsFalse(team.SetName(""));
         Assert.IsFalse(team.SetName("    "));
@@ -43,10 +43,47 @@ public class TeamTest
     }
 
     [TestMethod]
+    public void SetIconTest()
+    {
+        SnowflakeService snowflakeService = new();
+        Snowflake snowflake = snowflakeService.Generate();
+
+        Team team = new(snowflake.ToString(), "Team", null, false);
+
+        Assert.AreEqual(Team.DefaultIcon, team.Icon);
+
+        string validIconName = "1234567890123456";
+        Assert.IsTrue(team.SetIcon(validIconName));
+        Assert.AreEqual(validIconName, team.Icon);
+
+        Assert.IsFalse(team.SetIcon(""));
+        Assert.IsFalse(team.SetIcon("InvalidLength"));
+        Assert.IsFalse(team.SetIcon("Has a space"));
+        Assert.IsFalse(team.SetIcon("Some!invalid_chars"));
+        Assert.AreEqual(validIconName, team.Icon);
+
+        Assert.IsTrue(team.SetIcon(null));
+        Assert.AreEqual(Team.DefaultIcon, team.Icon);
+    }
+
+    [TestMethod]
+    public void VerifyTest()
+    {
+        SnowflakeService snowflakeService = new();
+        Snowflake snowflake = snowflakeService.Generate();
+
+        Team team = new(snowflake.ToString(), "Team", null, false);
+        Assert.IsFalse(team.Verified);
+
+        team.Verify();
+        Assert.IsTrue(team.Verified);
+    }
+
+    [TestMethod]
     public void AddMemberTest_TeamMember()
     {
         SnowflakeService snowflakeService = new();
-        Team team = new(snowflakeService.Generate().ToString(), "Team");
+        Team team = new(snowflakeService.Generate().ToString(), "Team", null, false);
 
         User user1 = new(snowflakeService.Generate().ToString(), "User 1");
         TeamMember member1 = new(user1, team, (int)TeamRole.Player);
@@ -70,7 +107,7 @@ public class TeamTest
     public void AddMemberTest_User()
     {
         SnowflakeService snowflakeService = new();
-        Team team = new(snowflakeService.Generate().ToString(), "Team");
+        Team team = new(snowflakeService.Generate().ToString(), "Team", null, false);
 
         User user1 = new(snowflakeService.Generate().ToString(), "User 1");
         Assert.IsTrue(team.AddMember(user1));

@@ -8,12 +8,17 @@ public class Team
     public static readonly int NameMinLength = 1;
     public static readonly int NameMaxLength = 24;
     public static readonly Regex NameInvalidRegex = new(@"[^\w-. ]");
+    public static readonly int IconNameLength = 16;
+    public static readonly Regex IconNameInvalidRegex = new(@"[^\w]");
+    public static readonly string DefaultIcon = string.Empty; // TODO: Create default icon path
 
     public string Id { get; init; }
     public string Name { get; private set; }
+    public string Icon { get; private set; }
+    public bool Verified { get; private set; }
     public TeamMember[] Members { get; private set; }
 
-    public Team(string id, string name)
+    public Team(string id, string name, string? icon, bool verified)
     {
         // Validate arguments
         if (!Snowflake.Validate(id))
@@ -25,6 +30,8 @@ public class Team
         // Assign arguments to team
         Id = id;
         Name = name;
+        Icon = icon ?? DefaultIcon;
+        Verified = verified;
         Members = Array.Empty<TeamMember>();
     }
 
@@ -45,6 +52,37 @@ public class Team
         // Update name
         Name = name;
         return true;
+    }
+
+    /// <summary>
+    /// Set whether the default icon or a brand icon is used
+    /// </summary>
+    public bool SetIcon(string? icon)
+    {
+        // Validate icon
+        if (icon is null)
+        {
+            Icon = DefaultIcon;
+            return true;
+        }
+
+        if (icon.Length != IconNameLength)
+            return false;
+
+        if (IconNameInvalidRegex.IsMatch(icon))
+            return false;
+
+        // Update icon
+        Icon = icon ?? DefaultIcon;
+        return true;
+    }
+
+    /// <summary>
+    /// Mark the team as verified
+    /// </summary>
+    public void Verify()
+    {
+        Verified = true;
     }
 
     /// <summary>
