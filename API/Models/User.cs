@@ -11,11 +11,17 @@ public class User
 
     public string Id { get; init; }
     public string Username { get; private set; }
+    public int Discriminator { get; private set; }
     public DateTime Timestamp { get; init; }
     private int _Permissions { get; set; }
 
+    public string Tag
+    {
+        get { return $"{Username}#{Discriminator:0000}"; }
+    }
+
     /// <exception cref="ArgumentException"></exception>
-    public User(string id, string username, int permissions = 0)
+    public User(string id, string username, int discriminator, int permissions = 0)
     {
         // Validate arguments
         if (!Snowflake.Validate(id))
@@ -24,9 +30,13 @@ public class User
         if (!SetUsername(username))
             throw new ArgumentException($"Invalid {nameof(username)} provided");
 
+        if (!SetDiscriminator(discriminator))
+            throw new ArgumentException($"Invalid {nameof(discriminator)} provided");
+
         // Assign arguments to user
         Id = id;
         Username = username;
+        Discriminator = discriminator;
         Timestamp = Snowflake.GetTimestamp(id);
         _Permissions = permissions;
     }
@@ -47,6 +57,20 @@ public class User
 
         // Update username
         Username = username;
+        return true;
+    }
+
+    /// <summary>
+    /// Update the user's discriminator
+    /// </summary>
+    public bool SetDiscriminator(int discriminator)
+    {
+        // Validate discriminator
+        if (discriminator < 1 || discriminator > 9999)
+            return false;
+
+        // Update discriminator
+        Discriminator = discriminator;
         return true;
     }
 

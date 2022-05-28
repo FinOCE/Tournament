@@ -85,7 +85,7 @@ public class TeamTest
         SnowflakeService snowflakeService = new();
         Team team = new(snowflakeService.Generate().ToString(), "Team", null, false);
 
-        User user1 = new(snowflakeService.Generate().ToString(), "User 1");
+        User user1 = new(snowflakeService.Generate().ToString(), "User 1", 1234);
         TeamMember member1 = new(user1, team, (int)TeamRole.Player);
         Assert.IsTrue(team.AddMember(member1));
         Assert.IsFalse(team.AddMember(member1));
@@ -94,7 +94,7 @@ public class TeamTest
         Assert.IsTrue(team.Members[0].User.Id == member1.User.Id);
         Assert.IsTrue(team.Members[0].HasRole(TeamRole.Player));
 
-        User user2 = new(snowflakeService.Generate().ToString(), "User 2");
+        User user2 = new(snowflakeService.Generate().ToString(), "User 2", 1234);
         TeamMember member2 = new(user2, team, (int)TeamRole.Substitute);
         Assert.IsTrue(team.AddMember(member2));
 
@@ -109,7 +109,7 @@ public class TeamTest
         SnowflakeService snowflakeService = new();
         Team team = new(snowflakeService.Generate().ToString(), "Team", null, false);
 
-        User user1 = new(snowflakeService.Generate().ToString(), "User 1");
+        User user1 = new(snowflakeService.Generate().ToString(), "User 1", 1234);
         Assert.IsTrue(team.AddMember(user1));
         Assert.IsFalse(team.AddMember(user1));
 
@@ -117,7 +117,7 @@ public class TeamTest
         Assert.IsTrue(team.Members[0].User.Id == user1.Id);
         Assert.IsTrue(team.Members[0].HasRole(TeamRole.Player));
 
-        User user2 = new(snowflakeService.Generate().ToString(), "User 2");
+        User user2 = new(snowflakeService.Generate().ToString(), "User 2", 1234);
         Assert.IsTrue(team.AddMember(user2, (int)TeamRole.Substitute));
         Assert.IsFalse(team.AddMember(user2, (int)TeamRole.Substitute));
 

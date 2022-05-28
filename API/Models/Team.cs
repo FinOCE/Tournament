@@ -18,6 +18,7 @@ public class Team
     public bool Verified { get; private set; }
     public TeamMember[] Members { get; private set; }
 
+    /// <exception cref="ArgumentException"></exception>
     public Team(string id, string name, string? icon, bool verified)
     {
         // Validate arguments

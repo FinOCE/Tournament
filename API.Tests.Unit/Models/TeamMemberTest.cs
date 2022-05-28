@@ -10,7 +10,7 @@ public class TeamMemberTest
         Snowflake snowflake1 = snowflakeService.Generate();
         Snowflake snowflake2 = snowflakeService.Generate();
 
-        User user = new(snowflake1.ToString(), "Username");
+        User user = new(snowflake1.ToString(), "Username", 1234);
         Team team = new(snowflake2.ToString(), "Name", null, false);
         TeamMember member = new(user, team, (int)TeamRole.Substitute);
 
@@ -25,7 +25,7 @@ public class TeamMemberTest
         Snowflake snowflake1 = snowflakeService.Generate();
         Snowflake snowflake2 = snowflakeService.Generate();
 
-        User user = new(snowflake1.ToString(), "Username");
+        User user = new(snowflake1.ToString(), "Username", 1234);
         Team team = new(snowflake2.ToString(), "Name", null, false);
         TeamMember member = new(user, team);
 
@@ -43,7 +43,7 @@ public class TeamMemberTest
         Snowflake snowflake1 = snowflakeService.Generate();
         Snowflake snowflake2 = snowflakeService.Generate();
 
-        User user = new(snowflake1.ToString(), "Username");
+        User user = new(snowflake1.ToString(), "Username", 1234);
         Team team = new(snowflake2.ToString(), "Name", null, false);
         TeamMember member = new(user, team);
         member.AddRole(TeamRole.Captain);
@@ -62,7 +62,7 @@ public class TeamMemberTest
         Snowflake snowflake1 = snowflakeService.Generate();
         Snowflake snowflake2 = snowflakeService.Generate();
 
-        User user = new(snowflake1.ToString(), "Username");
+        User user = new(snowflake1.ToString(), "Username", 1234);
         Team team = new(snowflake2.ToString(), "Name", null, false);
 
         TeamMember member = new(user, team);
