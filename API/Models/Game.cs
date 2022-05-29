@@ -37,7 +37,7 @@ public class Game
         if (!Snowflake.Validate(id))
             throw new ArgumentException($"Invalid {nameof(id)} provided");
 
-        if (series.Teams.Keys.Count != score.Keys.Count || !series.Teams.Keys.All(id => score.Keys.Contains(id)))
+        if (series.Teams.Keys.Count != score.Keys.Count || !series.Teams.Keys.All(id => score.ContainsKey(id)))
             throw new ArgumentException($"Invalid {nameof(series)} or {nameof(score)} provided");
 
         foreach (int s in score.Values)

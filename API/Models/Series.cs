@@ -27,7 +27,7 @@ public class Series
         {
             Dictionary<string, int> scores = new();
             foreach (string teamId in Teams.Keys)
-                Score.Add(teamId, 0);
+                scores.Add(teamId, 0);
 
             foreach (Game game in Games.Values)
                 if (game.Finished)
@@ -62,7 +62,7 @@ public class Series
             throw new ArgumentException($"Invalid {nameof(bestOf)} provided");
 
         foreach (Game game in games.Values)
-            if (!teams.Keys.Equals(game.Score.Keys))
+            if (!teams.Keys.All(id => game.Score.ContainsKey(id)))
                 throw new ArgumentException($"Invalid {nameof(teams)} or {nameof(games)} provided");
 
         // Assign arguments to series
@@ -78,7 +78,10 @@ public class Series
     {
         Dictionary<string, int> score = Score;
 
-        if (score.Values.ElementAt(0) == score.Values.ElementAt(1))
+        if (Finished)
+            return false;
+
+        if (!Forfeited && score.Values.ElementAt(0) < (BestOf + 1) / 2 && score.Values.ElementAt(1) < (BestOf + 1) / 2)
             return false;
 
         Finished = true;
@@ -89,12 +92,16 @@ public class Series
     /// Make a team forfeit the series
     /// </summary>
     /// <exception cref="ArgumentException"></exception>
-    public void Forfeit(string id)
+    public bool Forfeit(string id)
     {
         if (!Teams.ContainsKey(id))
-            throw new ArgumentException($"Invalid {nameof(id)} provided");
+            return false;
+
+        if (Finished)
+            return false;
 
         Forfeiter = id;
         Finish();
+        return true;
     }
 }
