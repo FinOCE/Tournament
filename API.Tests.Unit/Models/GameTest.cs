@@ -21,7 +21,6 @@ public class GameTest
         Series = new(SnowflakeService.Generate().ToString(), teams, 5);
 
         Game = new(SnowflakeService.Generate().ToString(), Series);
-        Series.Games.Add(Game.Id, Game);
     }
 
     [TestMethod]
@@ -47,7 +46,13 @@ public class GameTest
     public void ConstructorTest_New()
     {
         Assert.ThrowsException<ArgumentException>(() => new Game("", Series), "The constructor should not accept an invalid snowflake");
-        Assert.IsInstanceOfType(new Game(SnowflakeService.Generate().ToString(), Series), typeof(Game), "The constructor should create a valid game");
+        
+        Game game2 = new(SnowflakeService.Generate().ToString(), Series); // game1 is added in the TestInitialize
+        Assert.IsInstanceOfType(game2, typeof(Game), "The constructor should create a valid game");
+        Assert.AreEqual("Game 2", game2.Name, "The game name should be \"Game 2\"");
+
+        Game game3 = new(SnowflakeService.Generate().ToString(), Series);
+        Assert.AreEqual("Game 3", game3.Name, "The game name should be \"Game 3\"");
     }
 
     [TestMethod]
@@ -70,7 +75,12 @@ public class GameTest
         invalidScore.Add("Second", 1);
         Assert.ThrowsException<ArgumentException>(() => new Game(id, Series, invalidScore), "The constructor should not accept an invalid score");
 
-        Assert.IsInstanceOfType(new Game(id, Series, validScore), typeof(Game), "The constructor should create a valid game");
+        Game game2 = new(SnowflakeService.Generate().ToString(), Series, validScore); // game1 is added in the TestInitialize
+        Assert.IsInstanceOfType(game2, typeof(Game), "The constructor should create a valid game");
+        Assert.AreEqual("Game 2", game2.Name, "The game name should be \"Game 2\"");
+
+        Game game3 = new(SnowflakeService.Generate().ToString(), Series, validScore);
+        Assert.AreEqual("Game 3", game3.Name, "The game name should be \"Game 3\"");
     }
 
     [TestMethod]

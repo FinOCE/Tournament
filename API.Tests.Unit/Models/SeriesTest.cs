@@ -45,7 +45,6 @@ public class SeriesTest
         string team2Id = Series.Teams.Keys.Last();
 
         Game game1 = new(SnowflakeService.Generate().ToString(), Series);
-        Series.Games.Add(game1.Id, game1);
         game1.SetScore(team1Id, 1);
         game1.Finish();
         Series.Finish();
@@ -53,7 +52,6 @@ public class SeriesTest
         Assert.IsFalse(Series.Finished, "The series should unsuccessfully finish an incomplete series");
 
         Game game2 = new(SnowflakeService.Generate().ToString(), Series);
-        Series.Games.Add(game2.Id, game2);
         game2.SetScore(team2Id, 1);
         game2.Finish();
         Series.Finish();
@@ -61,7 +59,6 @@ public class SeriesTest
         Assert.IsFalse(Series.Finished, "The series should unsuccessfully finish an incomplete series");
 
         Game game3 = new(SnowflakeService.Generate().ToString(), Series);
-        Series.Games.Add(game3.Id, game3);
         game3.SetScore(team1Id, 1);
         game3.Finish();
         Series.Finish();
@@ -86,14 +83,12 @@ public class SeriesTest
         string winnerId = Series.Teams.Keys.First();
 
         Game game1 = new(SnowflakeService.Generate().ToString(), Series);
-        Series.Games.Add(game1.Id, game1);
         game1.SetScore(winnerId, 1);
         game1.Finish();
 
         Assert.IsNull(Series.Winner, "1 win in a best of 3 should not allow a win");
 
         Game game2 = new(SnowflakeService.Generate().ToString(), Series);
-        Series.Games.Add(game2.Id, game2);
         game2.SetScore(winnerId, 1);
         game2.Finish();
 
@@ -121,7 +116,6 @@ public class SeriesTest
         Assert.AreEqual(0, Series.Score[team2Id], "Team 2 score should be 0");
 
         Game game1 = new(SnowflakeService.Generate().ToString(), Series);
-        Series.Games.Add(game1.Id, game1);
         game1.SetScore(team1Id, 1);
         game1.Finish();
 
@@ -129,7 +123,6 @@ public class SeriesTest
         Assert.AreEqual(0, Series.Score[team2Id], "Team 2 score should be 0");
 
         Game game2 = new(SnowflakeService.Generate().ToString(), Series);
-        Series.Games.Add(game2.Id, game2);
         game2.SetScore(team2Id, 1);
         game2.Finish();
 
@@ -137,7 +130,6 @@ public class SeriesTest
         Assert.AreEqual(1, Series.Score[team2Id], "Team 2 score should be 1");
 
         Game game3 = new(SnowflakeService.Generate().ToString(), Series);
-        Series.Games.Add(game3.Id, game3);
         game3.SetScore(team1Id, 1);
         game3.Finish();
 
@@ -160,7 +152,6 @@ public class SeriesTest
         Dictionary<string, Game> games = new();
 
         Game game = new(SnowflakeService.Generate().ToString(), Series);
-        Series.Games.Add(game.Id, game);
         game.SetScore(Series.Teams.Keys.First(), 1);
         game.Finish();
 
@@ -237,21 +228,18 @@ public class SeriesTest
         string team2Id = Series.Teams.Keys.Last();
 
         Game game1 = new(SnowflakeService.Generate().ToString(), Series);
-        Series.Games.Add(game1.Id, game1);
         game1.SetScore(team1Id, 1);
         game1.Finish();
 
         Assert.IsFalse(Series.Finish(), "The series should unsuccessfully finish an incomplete series");
 
         Game game2 = new(SnowflakeService.Generate().ToString(), Series);
-        Series.Games.Add(game2.Id, game2);
         game2.SetScore(team2Id, 1);
         game2.Finish();
 
         Assert.IsFalse(Series.Finish(), "The series should unsuccessfully finish an incomplete series");
 
         Game game3 = new(SnowflakeService.Generate().ToString(), Series);
-        Series.Games.Add(game3.Id, game3);
         game3.SetScore(team1Id, 1);
         game3.Finish();
 
@@ -268,7 +256,6 @@ public class SeriesTest
         string forfeitingTeamId = Series.Teams.Keys.First();
 
         Game game = new(SnowflakeService.Generate().ToString(), Series);
-        Series.Games.Add(game.Id, game);
         game.SetScore(forfeitingTeamId, 1);
         game.Finish();
 

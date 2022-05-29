@@ -3,6 +3,7 @@
 public class Game
 {
     public string Id { get; init; }
+    public string Name { get; init; }
     public Series Series { get; init; }
     public Dictionary<string, int> Score { get; init; }
     public bool Finished { get; private set; }
@@ -25,10 +26,13 @@ public class Game
 
         // Assign arguments to game
         Id = id;
+        Name = $"Game {series.Games.Keys.Where(gameId => ulong.Parse(gameId) < ulong.Parse(id)).ToArray().Length + 1}";
         Series = series;
         Score = new();
         foreach (string teamId in Series.Teams.Keys)
             Score.Add(teamId, 0);
+
+        Series.Games.Add(Id, this);
     }
 
     public Game(string id, Series series, Dictionary<string, int> score)
@@ -46,8 +50,11 @@ public class Game
 
         // Assign arguments to game
         Id = id;
+        Name = $"Game {series.Games.Keys.Where(gameId => ulong.Parse(gameId) < ulong.Parse(id)).ToArray().Length + 1}";
         Series = series;
         Score = score;
+
+        Series.Games.Add(Id, this);
     }
 
     /// <summary>
