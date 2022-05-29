@@ -2,10 +2,16 @@
 
 public class Series
 {
+    public string Id { get; init; }
     public Dictionary<string, Team> Teams { get; init; }
     public Dictionary<string, Game> Games { get; init; }
     public int BestOf { get; init; }
-    public bool Finished { get; private set; }
+    public Series? WinnerProgression { get; private set; }
+    public Series? LoserProgression { get; private set; }
+    public DateTime? StartedTimestamp { get; private set; }
+    public bool Started { get { return StartedTimestamp != null; } }
+    public DateTime? FinishedTimestamp { get; private set; }
+    public bool Finished { get { return FinishedTimestamp != null; } }
     public string? Forfeiter { get; private set; }
     public bool Forfeited { get { return Forfeiter != null; } }
     public string? Winner
@@ -37,7 +43,7 @@ public class Series
         }
     }
 
-    public Series(string id, Dictionary<string, Team> teams, int bestOf)
+    public Series(string id, Dictionary<string, Team>? teams, int bestOf)
     {
         // Validate arguments
         if (!Snowflake.Validate(id))
@@ -47,7 +53,8 @@ public class Series
             throw new ArgumentException($"Invalid {nameof(bestOf)} provided");
 
         // Assign arguments to series
-        Teams = teams;
+        Id = id;
+        Teams = teams ?? new();
         BestOf = bestOf;
         Games = new();
     }
@@ -66,9 +73,37 @@ public class Series
                 throw new ArgumentException($"Invalid {nameof(teams)} or {nameof(games)} provided");
 
         // Assign arguments to series
+        Id = id;
         Teams = teams;
         BestOf = bestOf;
         Games = games;
+    }
+
+    /// <summary>
+    /// Add a team to the series
+    /// </summary>
+    public bool AddTeam(Team team)
+    {
+        if (Teams.Count == 2)
+            return false;
+
+        if (Teams.ContainsKey(team.Id))
+            return false;
+
+        Teams.Add(team.Id, team);
+        return true;
+    }
+
+    /// <summary>
+    /// Start the series
+    /// </summary>
+    public bool Start()
+    {
+        if (Teams.Count != 2)
+            return false;
+
+        StartedTimestamp = DateTime.UtcNow;
+        return true;
     }
 
     /// <summary>
@@ -76,15 +111,21 @@ public class Series
     /// </summary>
     public bool Finish()
     {
-        Dictionary<string, int> score = Score;
-
         if (Finished)
             return false;
 
+        Dictionary<string, int> score = Score;
         if (!Forfeited && score.Values.ElementAt(0) < (BestOf + 1) / 2 && score.Values.ElementAt(1) < (BestOf + 1) / 2)
             return false;
 
-        Finished = true;
+        FinishedTimestamp = DateTime.UtcNow;
+
+        if (WinnerProgression != null)
+            WinnerProgression.AddTeam(Teams[Winner!]);
+
+        if (LoserProgression != null)
+            LoserProgression.AddTeam(Teams.First(team => team.Key != Winner).Value);
+
         return true;
     }
 
@@ -103,5 +144,21 @@ public class Series
         Forfeiter = id;
         Finish();
         return true;
+    }
+
+    /// <summary>
+    /// Set where the winner of the match should progress to
+    /// </summary>
+    public void SetWinnerProgression(Series series)
+    {
+        WinnerProgression = series;
+    }
+
+    /// <summary>
+    /// Set where the loser of the match should progress to
+    /// </summary>
+    public void SetLoserProgression(Series series)
+    {
+        LoserProgression = series;
     }
 }

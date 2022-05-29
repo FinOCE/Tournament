@@ -22,6 +22,54 @@ public class SeriesTest
     }
 
     [TestMethod]
+    public void StartedTest()
+    {
+        Team team1 = new(SnowflakeService.Generate().ToString(), "Team 1", null, false);
+        Team team2 = new(SnowflakeService.Generate().ToString(), "Team 2", null, false);
+        Series series = new(SnowflakeService.Generate().ToString(), null, 3);
+
+        Assert.IsFalse(series.Started, "The series should not start with no teams");
+
+        series.AddTeam(team1);
+        series.AddTeam(team2);
+        Assert.IsFalse(series.Started, "The series should not start without being called");
+
+        series.Start();
+        Assert.IsTrue(series.Started, "The series should start with two teams");
+    }
+
+    [TestMethod]
+    public void FinishedTest()
+    {
+        string team1Id = Series.Teams.Keys.First();
+        string team2Id = Series.Teams.Keys.Last();
+
+        Game game1 = new(SnowflakeService.Generate().ToString(), Series);
+        Series.Games.Add(game1.Id, game1);
+        game1.SetScore(team1Id, 1);
+        game1.Finish();
+        Series.Finish();
+
+        Assert.IsFalse(Series.Finished, "The series should unsuccessfully finish an incomplete series");
+
+        Game game2 = new(SnowflakeService.Generate().ToString(), Series);
+        Series.Games.Add(game2.Id, game2);
+        game2.SetScore(team2Id, 1);
+        game2.Finish();
+        Series.Finish();
+
+        Assert.IsFalse(Series.Finished, "The series should unsuccessfully finish an incomplete series");
+
+        Game game3 = new(SnowflakeService.Generate().ToString(), Series);
+        Series.Games.Add(game3.Id, game3);
+        game3.SetScore(team1Id, 1);
+        game3.Finish();
+        Series.Finish();
+
+        Assert.IsTrue(Series.Finished, "The series should successfully finish with a team having 2/3 wins");
+    }
+
+    [TestMethod]
     public void ForfeitedTest()
     {
         Assert.IsFalse(Series.Forfeited, "The series should not be marked as forfeited");
@@ -139,8 +187,52 @@ public class SeriesTest
     }
 
     [TestMethod]
+    public void AddTeamTest()
+    {
+        Team team1 = new(SnowflakeService.Generate().ToString(), "Team 1", null, false);
+        Team team2 = new(SnowflakeService.Generate().ToString(), "Team 2", null, false);
+        Team team3 = new(SnowflakeService.Generate().ToString(), "Team 3", null, false);
+        Series series = new(SnowflakeService.Generate().ToString(), null, 3);
+
+        Assert.AreEqual(0, series.Teams.Count, "The series should be created with no teams");
+
+        Assert.IsTrue(series.AddTeam(team1), "Team 1 should successfully be added");
+        Assert.AreEqual(1, series.Teams.Count, "The series should have 1 team");
+
+        Assert.IsFalse(series.AddTeam(team1), "Team 1 should not be able to be added twice");
+        Assert.AreEqual(1, series.Teams.Count, "The series should have 1 team");
+
+        Assert.IsTrue(series.AddTeam(team2), "Team 2 should successfully be added");
+        Assert.AreEqual(2, series.Teams.Count, "The series should have 2 teams");
+
+        Assert.IsFalse(series.AddTeam(team3), "Team 3 should not fit in the series");
+        Assert.AreEqual(2, series.Teams.Count, "The series should have 2 teams");
+    }
+
+    [TestMethod]
+    public void StartTest()
+    {
+        Team team1 = new(SnowflakeService.Generate().ToString(), "Team 1", null, false);
+        Team team2 = new(SnowflakeService.Generate().ToString(), "Team 2", null, false);
+        Series series = new(SnowflakeService.Generate().ToString(), null, 3);
+
+        Assert.IsFalse(series.Start(), "The series should not start with no teams");
+        Assert.IsNull(series.StartedTimestamp, "The started timestamp should not exist");
+
+        series.AddTeam(team1);
+        series.AddTeam(team2);
+        Assert.IsTrue(series.Start(), "The series should start with two teams");
+        Assert.IsNotNull(series.StartedTimestamp, "The started timestamp should exist");
+    }
+
+    [TestMethod]
     public void FinishTest()
     {
+        Series winnerSeries = new(SnowflakeService.Generate().ToString(), null, 3);
+        Series.SetWinnerProgression(winnerSeries);
+        Series loserSeries = new(SnowflakeService.Generate().ToString(), null, 3);
+        Series.SetLoserProgression(loserSeries);
+
         string team1Id = Series.Teams.Keys.First();
         string team2Id = Series.Teams.Keys.Last();
 
@@ -165,6 +257,9 @@ public class SeriesTest
 
         Assert.IsTrue(Series.Finish(), "The series should successfully finish with a team having 2/3 wins");
         Assert.IsFalse(Series.Finish(), "A game should not be able to be finished multiple times");
+
+        Assert.IsTrue(winnerSeries.Teams.ContainsKey(team1Id), "The winner should have progressed to winner series");
+        Assert.IsTrue(loserSeries.Teams.ContainsKey(team2Id), "The loser should have progressed to loser series");
     }
 
     [TestMethod]
@@ -181,5 +276,27 @@ public class SeriesTest
         Assert.IsTrue(Series.Forfeit(forfeitingTeamId), "The team should be able to forfeit");
         Assert.IsTrue(Series.Forfeited && Series.Finished, "The game should be marked as forfeited and completed");
         Assert.IsFalse(Series.Forfeit(forfeitingTeamId), "A game should not be able to be forfeited multiple times");
+    }
+
+    [TestMethod]
+    public void SetWinnerProgressionTest()
+    {
+        Assert.IsNull(Series.WinnerProgression, "There should be no winner progression by default");
+
+        Series winnerSeries = new(SnowflakeService.Generate().ToString(), null, 3);
+        Series.SetWinnerProgression(winnerSeries);
+
+        Assert.AreEqual(winnerSeries.Id, Series.WinnerProgression?.Id, "The series should be applied as the winner series");
+    }
+
+    [TestMethod]
+    public void SetLoserProgressionTest()
+    {
+        Assert.IsNull(Series.LoserProgression, "There should be no loser progression by default");
+
+        Series loserSeries = new(SnowflakeService.Generate().ToString(), null, 3);
+        Series.SetLoserProgression(loserSeries);
+
+        Assert.AreEqual(loserSeries.Id, Series.LoserProgression?.Id, "The series should be applied as the loser series");
     }
 }
