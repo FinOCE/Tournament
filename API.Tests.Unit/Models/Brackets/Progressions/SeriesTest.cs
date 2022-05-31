@@ -1,4 +1,4 @@
-﻿namespace API.Tests.Unit.Models;
+﻿namespace API.Tests.Unit.Models.Brackets.Progressions;
 
 [TestClass]
 public class SeriesTest
@@ -201,6 +201,13 @@ public class SeriesTest
     }
 
     [TestMethod]
+    [Ignore]
+    public void RemoveTeamTest()
+    {
+        throw new NotImplementedException();
+    }
+
+    [TestMethod]
     public void StartTest()
     {
         Team team1 = new(SnowflakeService.Generate().ToString(), "Team 1", null, false);
@@ -273,7 +280,7 @@ public class SeriesTest
         Series winnerSeries = new(SnowflakeService.Generate().ToString(), null, 3);
         Series.SetWinnerProgression(winnerSeries);
 
-        Assert.AreEqual(winnerSeries.Id, Series.WinnerProgression?.Id, "The series should be applied as the winner series");
+        Assert.AreEqual(winnerSeries.Id, ((Series)Series.WinnerProgression!).Id, "The series should be applied as the winner series");
     }
 
     [TestMethod]
@@ -284,6 +291,6 @@ public class SeriesTest
         Series loserSeries = new(SnowflakeService.Generate().ToString(), null, 3);
         Series.SetLoserProgression(loserSeries);
 
-        Assert.AreEqual(loserSeries.Id, Series.LoserProgression?.Id, "The series should be applied as the loser series");
+        Assert.AreEqual(loserSeries.Id, ((Series)Series.LoserProgression!).Id, "The series should be applied as the loser series");
     }
 }

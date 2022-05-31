@@ -1,13 +1,13 @@
-﻿namespace API.Models;
+﻿namespace API.Models.Brackets.Progressions;
 
-public class Series
+public class Series : IProgression
 {
     public string Id { get; init; }
     public Dictionary<string, Team> Teams { get; init; }
     public Dictionary<string, Game> Games { get; init; }
     public int BestOf { get; init; }
-    public Series? WinnerProgression { get; private set; }
-    public Series? LoserProgression { get; private set; }
+    public IProgression? WinnerProgression { get; private set; }
+    public IProgression? LoserProgression { get; private set; }
     public DateTime? StartedTimestamp { get; private set; }
     public bool Started { get { return StartedTimestamp != null; } }
     public DateTime? FinishedTimestamp { get; private set; }
@@ -79,9 +79,6 @@ public class Series
         Games = games;
     }
 
-    /// <summary>
-    /// Add a team to the series
-    /// </summary>
     public bool AddTeam(Team team)
     {
         if (Teams.Count == 2)
@@ -91,6 +88,18 @@ public class Series
             return false;
 
         Teams.Add(team.Id, team);
+        return true;
+    }
+
+    public bool RemoveTeam(string id)
+    {
+        if (Started || Finished)
+            return false;
+
+        if (!Teams.ContainsKey(id))
+            return false;
+
+        Teams.Remove(id);
         return true;
     }
 
@@ -149,16 +158,16 @@ public class Series
     /// <summary>
     /// Set where the winner of the match should progress to
     /// </summary>
-    public void SetWinnerProgression(Series series)
+    public void SetWinnerProgression(IProgression? progression)
     {
-        WinnerProgression = series;
+        WinnerProgression = progression;
     }
 
     /// <summary>
     /// Set where the loser of the match should progress to
     /// </summary>
-    public void SetLoserProgression(Series series)
+    public void SetLoserProgression(IProgression? progression)
     {
-        LoserProgression = series;
+        LoserProgression = progression;
     }
 }
