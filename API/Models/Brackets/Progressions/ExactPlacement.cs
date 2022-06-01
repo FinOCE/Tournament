@@ -8,8 +8,12 @@ public class ExactPlacement : IPlacement
     public Dictionary<string, Team> Teams { get; init; } = new();
     public int Position { get; init; }
 
+    /// <exception cref="ArgumentException"></exception>
     public ExactPlacement(int position)
     {
+        if (position < 1)
+            throw new ArgumentException($"Invalid {nameof(position)} provided");
+
         Position = position;
     }
 
@@ -39,6 +43,7 @@ public class ExactPlacement : IPlacement
         {
             "11" => "th",
             "12" => "th",
+            "13" => "th",
             _ => Position.ToString().Last() switch
             {
                 '1' => "st",

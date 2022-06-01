@@ -201,10 +201,19 @@ public class SeriesTest
     }
 
     [TestMethod]
-    [Ignore]
     public void RemoveTeamTest()
     {
-        throw new NotImplementedException();
+        Team team1 = Teams.Values.First();
+        Team team2 = Teams.Values.Last();
+
+        Assert.AreEqual(2, Series.Teams.Count, "There should be 2 teams in the series");
+
+        Assert.IsTrue(Series.RemoveTeam(team1.Id), "Team 1 should successfully be removed");
+        Assert.AreEqual(1, Series.Teams.Count, "There should only be 1 remaining team");
+        Assert.IsFalse(Series.RemoveTeam(team1.Id), "A team that isn't in the series should not be removed");
+
+        Assert.IsTrue(Series.RemoveTeam(team2.Id), "Team 2 should successfully be removed");
+        Assert.AreEqual(0, Series.Teams.Count, "There should be no remaining teams");
     }
 
     [TestMethod]
