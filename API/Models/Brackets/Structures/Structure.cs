@@ -55,14 +55,14 @@ public class Structure : IStructure
 
     public virtual bool AddChild(IStructure child)
     {
-        if (Left == null)
-        {
-            Left = child;
-            return true;
-        }
-        else if (Right == null)
+        if (Right == null)
         {
             Right = child;
+            return true;
+        }
+        else if (Left == null)
+        {
+            Left = child;
             return true;
         }
         else return false;

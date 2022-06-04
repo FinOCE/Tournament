@@ -9,28 +9,8 @@ public class SingleEliminationBuilder : BracketBuilder
         if (Teams.Count == 0)
             throw new InvalidOperationException("No teams are currently in the bracket builder");
 
-        //// Get the number of teams in lower and upper rounds (probably not needed)
-        //int maxDepth = (int)Math.Ceiling(Math.Log2(Teams.Count));
-        //int lowerSlots = (int)Math.Pow(2, maxDepth);
-        //int upperSlots = lowerSlots / 2;
-
-        //int needsForLower = Teams.Count - upperSlots;
-        //int teamsInLower = needsForLower * 2;
-        //int teamsInUpper = Teams.Count - teamsInLower;
-
-        //Console.WriteLine($"Of {Teams.Count} teams, {teamsInLower} are in lower and {teamsInUpper} are in upper.");
-
-        Team[] teams = GetOrderedTeams();
-
-        /*
-         * TODO: Generate the bracket using the seeded teams
-         * 
-         * Assuming the teams are in order of best to worst, the new team
-         * is put against the worst team at upper round of the bracket.
-         */
-
         IStructure root = new Finale(new(SnowflakeService.Generate().ToString(), null, BestOf), new(1), new(2));
-
+        Team[] teams = GetOrderedTeams();
         BitArray higherRoundContainsIndex = new(2);
         
         for (int i = 0; i < teams.Length; i++)
@@ -46,7 +26,7 @@ public class SingleEliminationBuilder : BracketBuilder
             }
             else
             {
-                // Get index of team they need to compete against
+                // Get index of team they need to compete against (worst team in higher round)
                 int j = higherRoundContainsIndex.Length;
 
                 while (j > 0)
