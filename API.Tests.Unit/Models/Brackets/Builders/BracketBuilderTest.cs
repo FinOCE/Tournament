@@ -24,10 +24,17 @@ public class BracketBuilderTest
         throw new NotImplementedException();
     }
 
-    //[TestMethod]
-    //[Ignore]
-    //public void GenerateTest()
-    //{
-    //    throw new NotImplementedException();
-    //}
+    [TestMethod]
+    [Ignore]
+    public void SetBestOfTest()
+    {
+        throw new NotImplementedException();
+    }
+
+    [TestMethod]
+    [Ignore]
+    public void GetOrderedTeamsTest()
+    {
+        throw new NotImplementedException();
+    }
 }

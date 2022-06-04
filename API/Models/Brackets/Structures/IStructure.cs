@@ -19,7 +19,12 @@ public interface IStructure
     void SetLoserProgression(IProgression progression);
 
     /// <summary>
+    /// Find the nested structure that has the given team in it
+    /// </summary>
+    IStructure? FindStructureWithTeam(string teamId);
+
+    /// <summary>
     /// Add a child node to the structure
     /// </summary>
-    void AddChild(IStructure child);
+    bool AddChild(IStructure child);
 }

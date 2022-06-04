@@ -55,9 +55,6 @@ public abstract class BracketBuilder : IBracketBuilder
 
     public abstract IStructure Generate();
 
-    /// <summary>
-    /// Sort the teams by their seeding and return as an array in order of best to worst
-    /// </summary>
     public virtual Team[] GetOrderedTeams()
     {
         return Teams

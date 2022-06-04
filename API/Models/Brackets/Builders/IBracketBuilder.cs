@@ -30,4 +30,9 @@ public interface IBracketBuilder
     /// </summary>
     /// <exception cref="InvalidOperationException"></exception>
     IStructure Generate();
+
+    /// <summary>
+    /// Sort the teams by their seeding and return as an array in order of best to worst
+    /// </summary>
+    Team[] GetOrderedTeams();
 }

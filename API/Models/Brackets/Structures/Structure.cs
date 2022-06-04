@@ -46,15 +46,25 @@ public class Structure : IStructure
         Series.SetLoserProgression(progression);
     }
 
-    public virtual void AddChild(IStructure child)
+    public virtual IStructure? FindStructureWithTeam(string teamId)
+    {
+        if (Series.Teams.ContainsKey(teamId))
+            return this;
+        else return Left?.FindStructureWithTeam(teamId) ?? Right?.FindStructureWithTeam(teamId);
+    }
+
+    public virtual bool AddChild(IStructure child)
     {
         if (Left == null)
+        {
             Left = child;
+            return true;
+        }
         else if (Right == null)
+        {
             Right = child;
-        else if (Left.Children == Right.Children)
-            Left.AddChild(child);
-        else
-            Right.AddChild(child);
+            return true;
+        }
+        else return false;
     }
 }
