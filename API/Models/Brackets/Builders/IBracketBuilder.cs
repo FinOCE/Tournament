@@ -8,7 +8,7 @@ public interface IBracketBuilder
     /// <summary>
     /// Add a team to the bracket
     /// </summary>
-    bool AddTeam(Team team, int seed);
+    bool AddTeam(Team team, int seed = 0);
 
     /// <summary>
     /// Remove a team from the bracket
@@ -18,10 +18,16 @@ public interface IBracketBuilder
     /// <summary>
     /// Set the seed of a team
     /// </summary>
-    bool SetSeed(string id, int seed);
+    bool SetSeed(string id, int seed = 0);
 
-    ///// <summary>
-    ///// Generate the bracket with the given options
-    ///// </summary>
-    //Series Generate();
+    /// <summary>
+    /// Set the default maximum number of games per series
+    /// </summary>
+    bool SetBestOf(int bestOf);
+
+    /// <summary>
+    /// Generate the bracket
+    /// </summary>
+    /// <exception cref="InvalidOperationException"></exception>
+    IStructure Generate();
 }

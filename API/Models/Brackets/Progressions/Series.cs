@@ -5,7 +5,7 @@ public class Series : IProgression
     public string Id { get; init; }
     public Dictionary<string, Team> Teams { get; init; }
     public Dictionary<string, Game> Games { get; init; }
-    public int BestOf { get; init; }
+    public int BestOf { get; private set; }
     public IProgression? WinnerProgression { get; private set; }
     public IProgression? LoserProgression { get; private set; }
     public DateTime? StartedTimestamp { get; private set; }
@@ -100,6 +100,21 @@ public class Series : IProgression
             return false;
 
         Teams.Remove(id);
+        return true;
+    }
+
+    /// <summary>
+    /// Set how many games can be played at most
+    /// </summary>
+    public bool SetBestOf(int bestOf)
+    {
+        if (Started || Finished)
+            return false;
+
+        if (bestOf < 1)
+            return false;
+
+        BestOf = bestOf;
         return true;
     }
 

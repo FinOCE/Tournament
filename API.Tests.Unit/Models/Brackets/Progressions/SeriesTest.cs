@@ -217,6 +217,12 @@ public class SeriesTest
     }
 
     [TestMethod]
+    [Ignore]
+    public void SetBestOfTest()
+    { 
+    }
+
+    [TestMethod]
     public void StartTest()
     {
         Team team1 = new(SnowflakeService.Generate().ToString(), "Team 1", null, false);
