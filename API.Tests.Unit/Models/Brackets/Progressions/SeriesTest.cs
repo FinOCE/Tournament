@@ -156,12 +156,33 @@ public class SeriesTest
         game.Finish();
 
         // Test various forms of the constructor error handling
-        Assert.ThrowsException<ArgumentException>(() => new Series("", Teams, 3, games), "An invalid snowflake should throw an error");
-        Assert.ThrowsException<ArgumentException>(() => new Series(SnowflakeService.Generate().ToString(), Teams, 0, games), "An invalid best of count should throw an error");
-        Assert.IsInstanceOfType(new Series(SnowflakeService.Generate().ToString(), Teams, 3, games), typeof(Series), "A series should be instantiated");
+        Assert.ThrowsException<ArgumentException>(
+            () => new Series("", Teams, 3, games, DateTime.UtcNow, null, null),
+            "An invalid snowflake should throw an error");
+
+        Assert.ThrowsException<ArgumentException>(
+            () => new Series(SnowflakeService.Generate().ToString(), Teams, 0, games, DateTime.UtcNow, null, null),
+            "An invalid best of count should throw an error");
+
+        Assert.ThrowsException<ArgumentException>(
+            () => new Series(SnowflakeService.Generate().ToString(), Teams, 3, games, DateTime.UtcNow, DateTime.UtcNow, "invalid"),
+            "An invalid forfeiter ID should throw an error");
+
+        Assert.ThrowsException<ArgumentException>(
+            () => new Series(SnowflakeService.Generate().ToString(), Teams, 3, games, DateTime.UtcNow, null, Teams.Keys.First()),
+            "If a forfeiter ID is provided the match should have finished");
+
+        Assert.IsInstanceOfType(
+            new Series(SnowflakeService.Generate().ToString(), Teams, 3, games, DateTime.UtcNow, null, null),
+            typeof(Series),
+            "A series should be instantiated");
 
         games.Add(game.Id, game);
-        Assert.IsInstanceOfType(new Series(SnowflakeService.Generate().ToString(), Teams, 3, games), typeof(Series), "A series should be instantiated");
+
+        Assert.IsInstanceOfType(
+            new Series(SnowflakeService.Generate().ToString(), Teams, 3, games, DateTime.UtcNow, DateTime.UtcNow, Teams.Values.First().Id),
+            typeof(Series),
+            "A series should be instantiated");
 
         // Test a game from a different series
         Dictionary<string, Team> teams = new();
@@ -174,7 +195,10 @@ public class SeriesTest
 
         Game invalidGame = new(SnowflakeService.Generate().ToString(), invalidSeries);
         games.Add(invalidGame.Id, invalidGame);
-        Assert.ThrowsException<ArgumentException>(() => new Series("", Teams, 3, games), "A game from a different series shouldn't work");
+
+        Assert.ThrowsException<ArgumentException>(
+            () => new Series("", Teams, 3, games, DateTime.UtcNow, null, null),
+            "A game from a different series shouldn't work");
     }
 
     [TestMethod]
@@ -217,9 +241,19 @@ public class SeriesTest
     }
 
     [TestMethod]
-    [Ignore]
     public void SetBestOfTest()
-    { 
+    {
+        // Act
+        int oldBestOf = Series.BestOf;
+        bool success = Series.SetBestOf(5);
+        bool failure = Series.SetBestOf(-1);
+        int newBestOf = Series.BestOf;
+
+        // Assert
+        Assert.AreEqual(3, oldBestOf, "The best of should start at 3");
+        Assert.IsTrue(success, "The series should be able to be changed to 5");
+        Assert.IsFalse(failure, "The series should not be able to be set to -1");
+        Assert.AreEqual(5, newBestOf, "The best of should end at 5");
     }
 
     [TestMethod]

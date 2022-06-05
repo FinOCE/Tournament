@@ -59,7 +59,14 @@ public class Series : IProgression
         Games = new();
     }
 
-    public Series(string id, Dictionary<string, Team> teams, int bestOf, Dictionary<string, Game> games)
+    public Series(
+        string id,
+        Dictionary<string, Team> teams,
+        int bestOf,
+        Dictionary<string, Game> games,
+        DateTime? startedTimestamp,
+        DateTime? finishedTimestamp,
+        string? forfeiter)
     {
         // Validate arguments
         if (!Snowflake.Validate(id))
@@ -72,11 +79,20 @@ public class Series : IProgression
             if (!teams.Keys.All(id => game.Score.ContainsKey(id)))
                 throw new ArgumentException($"Invalid {nameof(teams)} or {nameof(games)} provided");
 
+        if (forfeiter != null && !teams.ContainsKey(forfeiter))
+            throw new ArgumentException($"Invalid {nameof(forfeiter)} provided");
+
+        if (forfeiter != null && finishedTimestamp == null)
+            throw new ArgumentException($"{nameof(finishedTimestamp)} cannot be null if {nameof(forfeiter)} is provided");
+
         // Assign arguments to series
         Id = id;
         Teams = teams;
         BestOf = bestOf;
         Games = games;
+        StartedTimestamp = startedTimestamp;
+        FinishedTimestamp = finishedTimestamp;
+        Forfeiter = forfeiter;
     }
 
     public bool AddTeam(Team team)
