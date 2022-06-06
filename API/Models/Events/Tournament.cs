@@ -5,19 +5,8 @@
 /// </summary>
 public class Tournament
 {
-    public static readonly int NameMinLength = 3;
-    public static readonly int NameMaxLength = 32;
-    public static readonly Regex NameInvalidRegex = new(@"[^\w-. ]");
-    public static readonly int DescriptionMaxLength = 2048;
-    public static readonly Regex DescriptionInvalidRegex = new(@"[^\w-. ]");
-    public static readonly int RulesMaxLength = 2048;
-    public static readonly Regex RulesInvalidRegex = new(@"[^\w-. ]");
-    public static readonly int IconNameLength = 16;
-    public static readonly Regex IconNameInvalidRegex = new(@"[^\w]");
-    public static readonly int BannerNameLength = 16;
-    public static readonly Regex BannerNameInvalidRegex = new(@"[^\w]");
-    public const string DefaultIcon = ""; // TODO: Create default icon path
-    public const string DefaultBanner = ""; // TODO: Create default banner path
+    public const string DefaultIcon = "1234567890123456"; // TODO: Create default icon path
+    public const string DefaultBanner = "1234567890123456"; // TODO: Create default banner path
 
     public string Id { get; init; }
     public string Name { get; private set; }
@@ -66,25 +55,18 @@ public class Tournament
         Coordinators = coordinators ?? new();
     }
 
-    // TODO: Create validator builder to avoid so much duplicated code
-
     /// <summary>
     /// Set the name of the tournament
     /// </summary>
     public bool SetName(string name)
     {
-        // Validate
-        name = name.Trim();
-
-        if (name.Length > NameMaxLength || name.Length < NameMinLength)
-            return false;
-
-        if (NameInvalidRegex.IsMatch(name))
-            return false;
-
-        // Update
-        Name = name;
-        return true;
+        return new StringValidator()
+            .Trim()
+            .SetMinimumLength(3)
+            .SetMaximumLength(32)
+            .SetInvalidRegex(new(@"[^\w-. ]"))
+            .OnSuccess(name => Name = name!)
+            .Test(name);
     }
 
     /// <summary>
@@ -92,25 +74,13 @@ public class Tournament
     /// </summary>
     public bool SetDescription(string? description)
     {
-        // Allow null
-        if (description is null)
-        {
-            Description = null;
-            return true;
-        }
-
-        // Validate
-        description = description.Trim();
-
-        if (description.Length > DescriptionMaxLength)
-            return false;
-
-        if (DescriptionInvalidRegex.IsMatch(description))
-            return false;
-
-        // Update
-        Description = description;
-        return true;
+        return new StringValidator()
+            .AllowNull()
+            .Trim()
+            .SetMaximumLength(2048)
+            .SetInvalidRegex(new(@"[^\w-. ]"))
+            .OnSuccess(description => Description = description)
+            .Test(description);
     }
 
     /// <summary>
@@ -118,25 +88,13 @@ public class Tournament
     /// </summary>
     public bool SetRules(string? rules)
     {
-        // Allow null
-        if (rules is null)
-        {
-            Rules = null;
-            return true;
-        }
-
-        // Validate
-        rules = rules.Trim();
-
-        if (rules.Length > RulesMaxLength)
-            return false;
-
-        if (RulesInvalidRegex.IsMatch(rules))
-            return false;
-
-        // Update
-        Rules = rules;
-        return true;
+        return new StringValidator()
+            .AllowNull()
+            .Trim()
+            .SetMaximumLength(2048)
+            .SetInvalidRegex(new(@"[^\w-. ]"))
+            .OnSuccess(rules => Rules = rules)
+            .Test(rules);
     }
 
     /// <summary>
@@ -144,25 +102,14 @@ public class Tournament
     /// </summary>
     public bool SetIcon(string? icon)
     {
-        // Allow null
-        if (icon is null)
-        {
-            Icon = DefaultIcon;
-            return true;
-        }
-
-        // Validate
-        icon = icon.Trim();
-
-        if (icon.Length > IconNameLength)
-            return false;
-
-        if (IconNameInvalidRegex.IsMatch(icon))
-            return false;
-
-        // Update
-        Icon = icon;
-        return true;
+        return new StringValidator()
+            .AllowNull()
+            .Trim()
+            .SetMinimumLength(16)
+            .SetMaximumLength(16)
+            .SetInvalidRegex(new(@"[^\w]"))
+            .OnSuccess(icon => Icon = icon ?? DefaultIcon)
+            .Test(icon);
     }
 
     /// <summary>
@@ -170,24 +117,13 @@ public class Tournament
     /// </summary>
     public bool SetBanner(string? banner)
     {
-        // Allow null
-        if (banner is null)
-        {
-            Icon = DefaultBanner;
-            return true;
-        }
-
-        // Validate
-        banner = banner.Trim();
-
-        if (banner.Length > BannerNameLength)
-            return false;
-
-        if (BannerNameInvalidRegex.IsMatch(banner))
-            return false;
-
-        // Update
-        Banner = banner;
-        return true;
+        return new StringValidator()
+            .AllowNull()
+            .Trim()
+            .SetMinimumLength(16)
+            .SetMaximumLength(16)
+            .SetInvalidRegex(new(@"[^\w]"))
+            .OnSuccess(banner => Banner = banner ?? DefaultBanner)
+            .Test(banner);
     }
 }

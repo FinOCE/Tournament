@@ -2,6 +2,7 @@
 global using System.Collections;
 global using System.Collections.Generic;
 global using System.Linq;
+global using System.Text.RegularExpressions;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using API.Models;
 global using API.Models.Brackets.Builders;

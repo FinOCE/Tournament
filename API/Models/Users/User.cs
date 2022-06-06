@@ -5,12 +5,7 @@
 /// </summary>
 public class User
 {
-    public static readonly int UsernameMinLength = 3;
-    public static readonly int UsernameMaxLength = 16;
-    public static readonly Regex UsernameInvalidRegex = new(@"[^\w-. ]");
-    public static readonly int IconNameLength = 16;
-    public static readonly Regex IconNameInvalidRegex = new(@"[^\w]");
-    public static readonly string DefaultIcon = string.Empty; // TODO: Create default icon path
+    public const string DefaultIcon = "1234567890123456"; // TODO: Create default icon path
 
     public string Id { get; init; }
     public string Username { get; private set; }
@@ -56,18 +51,13 @@ public class User
     /// </summary>
     public bool SetUsername(string username)
     {
-        // Validate username
-        username = username.Trim();
-
-        if (username.Length > UsernameMaxLength || username.Length < UsernameMinLength)
-            return false;
-
-        if (UsernameInvalidRegex.IsMatch(username))
-            return false;
-
-        // Update username
-        Username = username;
-        return true;
+        return new StringValidator()
+            .Trim()
+            .SetMinimumLength(3)
+            .SetMaximumLength(16)
+            .SetInvalidRegex(new(@"[^\w-. ]"))
+            .OnSuccess((string? username) => Username = username!)
+            .Test(username);
     }
 
     /// <summary>
@@ -89,22 +79,13 @@ public class User
     /// </summary>
     public bool SetIcon(string? icon)
     {
-        // Validate icon
-        if (icon is null)
-        {
-            Icon = DefaultIcon;
-            return true;
-        }
-
-        if (icon.Length != IconNameLength)
-            return false;
-
-        if (IconNameInvalidRegex.IsMatch(icon))
-            return false;
-
-        // Update icon
-        Icon = icon ?? DefaultIcon;
-        return true;
+        return new StringValidator()
+            .AllowNull()
+            .SetMinimumLength(16)
+            .SetMaximumLength(16)
+            .SetInvalidRegex(new(@"[^\w]"))
+            .OnSuccess(icon => Icon = icon ?? DefaultIcon)
+            .Test(icon);
     }
 
     /// <summary>

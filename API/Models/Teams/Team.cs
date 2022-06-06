@@ -5,12 +5,7 @@
 /// </summary>
 public class Team : ITeam
 {
-    public static readonly int NameMinLength = 1;
-    public static readonly int NameMaxLength = 24;
-    public static readonly Regex NameInvalidRegex = new(@"[^\w-. ]");
-    public static readonly int IconNameLength = 16;
-    public static readonly Regex IconNameInvalidRegex = new(@"[^\w]");
-    public static readonly string DefaultIcon = string.Empty; // TODO: Create default icon path
+    public const string DefaultIcon = ""; // TODO: Create default icon path
 
     public string Id { get; init; }
     public string Name { get; private set; }
@@ -41,18 +36,13 @@ public class Team : ITeam
     /// </summary>
     public bool SetName(string name)
     {
-        // Validate team name
-        name = name.Trim();
-
-        if (name.Length > NameMaxLength || name.Length < NameMinLength)
-            return false;
-
-        if (NameInvalidRegex.IsMatch(name))
-            return false;
-
-        // Update name
-        Name = name;
-        return true;
+        return new StringValidator()
+            .Trim()
+            .SetMinimumLength(1)
+            .SetMaximumLength(24)
+            .SetInvalidRegex(new(@"[^\w-. ]"))
+            .OnSuccess(name => Name = name!)
+            .Test(name);
     }
 
     /// <summary>
@@ -60,22 +50,13 @@ public class Team : ITeam
     /// </summary>
     public bool SetIcon(string? icon)
     {
-        // Validate icon
-        if (icon is null)
-        {
-            Icon = DefaultIcon;
-            return true;
-        }
-
-        if (icon.Length != IconNameLength)
-            return false;
-
-        if (IconNameInvalidRegex.IsMatch(icon))
-            return false;
-
-        // Update icon
-        Icon = icon ?? DefaultIcon;
-        return true;
+        return new StringValidator()
+            .AllowNull()
+            .SetMinimumLength(16)
+            .SetMaximumLength(16)
+            .SetInvalidRegex(new(@"[^\w]"))
+            .OnSuccess(icon => Icon = icon ?? DefaultIcon)
+            .Test(icon);
     }
 
     /// <summary>

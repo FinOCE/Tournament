@@ -5,11 +5,11 @@
 /// </summary>
 public class Snowflake
 {
-    public static readonly DateTime Epoch = new DateTime(2022, 1, 1);
-    public static readonly int TimestampBitArrayLength = 42;
-    public static readonly int WorkerIdBitArrayLength = 5;
-    public static readonly int ProcessIdBitArrayLength = 5;
-    public static readonly int SerialBitArrayLength = 12;
+    public static readonly DateTime Epoch = new(2022, 1, 1);
+    public const int TimestampBitArrayLength = 42;
+    public const int WorkerIdBitArrayLength = 5;
+    public const int ProcessIdBitArrayLength = 5;
+    public const int SerialBitArrayLength = 12;
 
     public DateTime Timestamp { get; init; }
     private BitArray _WorkerId { get; init; }

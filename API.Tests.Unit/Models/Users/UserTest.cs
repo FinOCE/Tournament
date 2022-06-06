@@ -98,7 +98,7 @@ public class UserTest
         Assert.AreEqual(validIconName, user.Icon);
 
         Assert.IsTrue(user.SetIcon(null));
-        Assert.AreEqual(Team.DefaultIcon, user.Icon);
+        Assert.AreEqual(User.DefaultIcon, user.Icon);
     }
 
     [TestMethod]
