@@ -12,7 +12,7 @@ public class GameTest
     {
         SnowflakeService = new();
 
-        Dictionary<string, Team> teams = new();
+        Dictionary<string, ITeam> teams = new();
         Team team1 = new(SnowflakeService.Generate().ToString(), "Team 1", null, false);
         Team team2 = new(SnowflakeService.Generate().ToString(), "Team 2", null, false);
         teams.Add(team1.Id, team1);

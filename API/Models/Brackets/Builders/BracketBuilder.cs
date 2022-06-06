@@ -6,7 +6,7 @@
 public abstract class BracketBuilder : IBracketBuilder
 {
     protected SnowflakeService SnowflakeService { get; init; }
-    public Dictionary<string, Team> Teams { get; init; } = new();
+    public Dictionary<string, ITeam> Teams { get; init; } = new();
     public Dictionary<string, int> Seeds { get; init; } = new();
     public int BestOf { get; private set; } = 1;
 
@@ -15,7 +15,7 @@ public abstract class BracketBuilder : IBracketBuilder
         SnowflakeService = snowflakeService;
     }
 
-    public virtual bool AddTeam(Team team, int seed = 0)
+    public virtual bool AddTeam(ITeam team, int seed = 0)
     {
         if (Teams.ContainsKey(team.Id))
             return false;
@@ -55,7 +55,7 @@ public abstract class BracketBuilder : IBracketBuilder
 
     public abstract IStructure Generate();
 
-    public virtual Team[] GetOrderedTeams()
+    public virtual ITeam[] GetOrderedTeams()
     {
         return Teams
             .OrderBy(team => Seeds[team.Key])

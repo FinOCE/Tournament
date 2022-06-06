@@ -10,7 +10,7 @@ public class SingleEliminationBuilder : BracketBuilder
             throw new InvalidOperationException("No teams are currently in the bracket builder");
 
         IStructure root = new Finale(new(SnowflakeService.Generate().ToString(), null, BestOf), new(1), new(2));
-        Team[] teams = GetOrderedTeams();
+        ITeam[] teams = GetOrderedTeams();
         BitArray higherRoundContainsIndex = new(2);
         
         for (int i = 0; i < teams.Length; i++)
@@ -38,7 +38,7 @@ public class SingleEliminationBuilder : BracketBuilder
                 head.Series.RemoveTeam(teams[j].Id);
 
                 // Create new series with the team and their opponent
-                Dictionary<string, Team> seriesTeams = new();
+                Dictionary<string, ITeam> seriesTeams = new();
                 seriesTeams.Add(teams[i].Id, teams[i]);
                 seriesTeams.Add(teams[j].Id, teams[j]);
 

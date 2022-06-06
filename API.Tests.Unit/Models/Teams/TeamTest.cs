@@ -1,4 +1,4 @@
-﻿namespace API.Tests.Unit.Models;
+﻿namespace API.Tests.Unit.Models.Teams;
 
 [TestClass]
 public class TeamTest
@@ -90,17 +90,17 @@ public class TeamTest
         Assert.IsTrue(team.AddMember(member1));
         Assert.IsFalse(team.AddMember(member1));
 
-        Assert.IsTrue(team.Members.Length == 1);
-        Assert.IsTrue(team.Members[0].User.Id == member1.User.Id);
-        Assert.IsTrue(team.Members[0].HasRole(TeamRole.Player));
+        Assert.IsTrue(team.Members.Keys.Count == 1);
+        Assert.IsTrue(team.Members.ContainsKey(member1.User.Id));
+        Assert.IsTrue(team.Members[member1.User.Id].HasRole(TeamRole.Player));
 
         User user2 = new(snowflakeService.Generate().ToString(), "User 2", 1234);
         TeamMember member2 = new(user2, team, (int)TeamRole.Substitute);
         Assert.IsTrue(team.AddMember(member2));
 
-        Assert.IsTrue(team.Members.Length == 2);
-        Assert.IsTrue(team.Members[1].User.Id == member2.User.Id);
-        Assert.IsTrue(team.Members[1].HasRole(TeamRole.Substitute));
+        Assert.IsTrue(team.Members.Keys.Count == 2);
+        Assert.IsTrue(team.Members.ContainsKey(member2.User.Id));
+        Assert.IsTrue(team.Members[member2.User.Id].HasRole(TeamRole.Substitute));
     }
 
     [TestMethod]
@@ -113,17 +113,17 @@ public class TeamTest
         Assert.IsTrue(team.AddMember(user1));
         Assert.IsFalse(team.AddMember(user1));
 
-        Assert.IsTrue(team.Members.Length == 1);
-        Assert.IsTrue(team.Members[0].User.Id == user1.Id);
-        Assert.IsTrue(team.Members[0].HasRole(TeamRole.Player));
+        Assert.IsTrue(team.Members.Keys.Count == 1);
+        Assert.IsTrue(team.Members.ContainsKey(user1.Id));
+        Assert.IsTrue(team.Members[user1.Id].HasRole(TeamRole.Player));
 
         User user2 = new(snowflakeService.Generate().ToString(), "User 2", 1234);
         Assert.IsTrue(team.AddMember(user2, (int)TeamRole.Substitute));
         Assert.IsFalse(team.AddMember(user2, (int)TeamRole.Substitute));
 
-        Assert.IsTrue(team.Members.Length == 2);
-        Assert.IsTrue(team.Members[1].User.Id == user2.Id);
-        Assert.IsFalse(team.Members[1].HasRole(TeamRole.Player));
-        Assert.IsTrue(team.Members[1].HasRole(TeamRole.Substitute));
+        Assert.IsTrue(team.Members.Keys.Count == 2);
+        Assert.IsTrue(team.Members.ContainsKey(user2.Id));
+        Assert.IsFalse(team.Members[user2.Id].HasRole(TeamRole.Player));
+        Assert.IsTrue(team.Members[user2.Id].HasRole(TeamRole.Substitute));
     }
 }

@@ -3,7 +3,7 @@
 public class Series : IProgression
 {
     public string Id { get; init; }
-    public Dictionary<string, Team> Teams { get; init; }
+    public Dictionary<string, ITeam> Teams { get; init; }
     public Dictionary<string, Game> Games { get; init; }
     public int BestOf { get; private set; }
     public IProgression? WinnerProgression { get; private set; }
@@ -43,7 +43,7 @@ public class Series : IProgression
         }
     }
 
-    public Series(string id, Dictionary<string, Team>? teams, int bestOf)
+    public Series(string id, Dictionary<string, ITeam>? teams, int bestOf)
     {
         // Validate arguments
         if (!Snowflake.Validate(id))
@@ -61,10 +61,10 @@ public class Series : IProgression
 
     public Series(
         string id,
-        Dictionary<string, Team> teams,
+        Dictionary<string, ITeam> teams,
         int bestOf,
         Dictionary<string, Game> games,
-        DateTime? startedTimestamp,
+        DateTime startedTimestamp,
         DateTime? finishedTimestamp,
         string? forfeiter)
     {
@@ -95,7 +95,7 @@ public class Series : IProgression
         Forfeiter = forfeiter;
     }
 
-    public bool AddTeam(Team team)
+    public bool AddTeam(ITeam team)
     {
         if (Teams.Count == 2)
             return false;

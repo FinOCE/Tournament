@@ -2,12 +2,12 @@
 
 public interface IProgression
 {
-    Dictionary<string, Team> Teams { get; }
+    Dictionary<string, ITeam> Teams { get; }
 
     /// <summary>
     /// Add the team to the progression
     /// </summary>
-    bool AddTeam(Team team);
+    bool AddTeam(ITeam team);
 
     /// <summary>
     /// Remove the team from the progression

@@ -2,13 +2,13 @@
 
 public interface IBracketBuilder
 {
-    Dictionary<string, Team> Teams { get; }
+    Dictionary<string, ITeam> Teams { get; }
     Dictionary<string, int> Seeds { get; }
 
     /// <summary>
     /// Add a team to the bracket
     /// </summary>
-    bool AddTeam(Team team, int seed = 0);
+    bool AddTeam(ITeam team, int seed = 0);
 
     /// <summary>
     /// Remove a team from the bracket
@@ -34,5 +34,5 @@ public interface IBracketBuilder
     /// <summary>
     /// Sort the teams by their seeding and return as an array in order of best to worst
     /// </summary>
-    Team[] GetOrderedTeams();
+    ITeam[] GetOrderedTeams();
 }

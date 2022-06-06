@@ -6,10 +6,10 @@
 public class TeamMember
 {
     public User User { get; init; }
-    public Team Team { get; init; }
+    public ITeam Team { get; init; }
     private int _Roles { get; set; }
 
-    public TeamMember(User user, Team team, int roles = (int)TeamRole.Player)
+    public TeamMember(User user, ITeam team, int roles = (int)TeamRole.Player)
     {
         User = user;
         Team = team;

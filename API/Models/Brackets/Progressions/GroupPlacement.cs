@@ -5,7 +5,7 @@
 /// </summary>
 public class GroupPlacement : IPlacement
 {
-    public Dictionary<string, Team> Teams { get; init; } = new();
+    public Dictionary<string, ITeam> Teams { get; init; } = new();
     public int Position { get; init; }
 
     /// <exception cref="ArgumentException"></exception>
@@ -17,7 +17,7 @@ public class GroupPlacement : IPlacement
         Position = position;
     }
 
-    public bool AddTeam(Team team)
+    public bool AddTeam(ITeam team)
     {
         if (Teams.ContainsKey(team.Id))
             return false;

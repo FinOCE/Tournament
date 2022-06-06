@@ -1,9 +1,9 @@
-﻿namespace API.Models;
+﻿namespace API.Models.Teams;
 
 /// <summary>
 /// A team that comprises of members
 /// </summary>
-public class Team
+public class Team : ITeam
 {
     public static readonly int NameMinLength = 1;
     public static readonly int NameMaxLength = 24;
@@ -16,7 +16,7 @@ public class Team
     public string Name { get; private set; }
     public string Icon { get; private set; }
     public bool Verified { get; private set; }
-    public TeamMember[] Members { get; private set; }
+    public Dictionary<string, TeamMember> Members { get; private set; }
 
     /// <exception cref="ArgumentException"></exception>
     public Team(string id, string name, string? icon, bool verified)
@@ -33,7 +33,7 @@ public class Team
         Name = name;
         Icon = icon ?? DefaultIcon;
         Verified = verified;
-        Members = Array.Empty<TeamMember>();
+        Members = new();
     }
 
     /// <summary>
@@ -91,10 +91,10 @@ public class Team
     /// </summary>
     public bool AddMember(TeamMember member)
     {
-        if (Members.Where(m => m.User.Id == member.User.Id).ToArray().Length != 0)
+        if (Members.ContainsKey(member.User.Id))
             return false;
 
-        Members = Members.Append(member).ToArray();
+        Members.Add(member.User.Id, member);
         return true;
     }
 
@@ -103,10 +103,10 @@ public class Team
     /// </summary>
     public bool AddMember(User user, int roles = (int)TeamRole.Player)
     {
-        if (Members.Where(m => m.User.Id == user.Id).ToArray().Length != 0)
+        if (Members.ContainsKey(user.Id))
             return false;
 
-        Members = Members.Append(new TeamMember(user, this, roles)).ToArray();
+        Members.Add(user.Id, new TeamMember(user, this, roles));
         return true;
     }
 
@@ -115,9 +115,10 @@ public class Team
     /// </summary>
     public bool RemoveMember(string id)
     {
-        int memberCount = Members.Length;
-        Members = Members.Where(m => m.User.Id != id).ToArray();
+        if (!Members.ContainsKey(id))
+            return false;
 
-        return memberCount > Members.Length;
+        Members.Remove(id);
+        return true;
     }
 }

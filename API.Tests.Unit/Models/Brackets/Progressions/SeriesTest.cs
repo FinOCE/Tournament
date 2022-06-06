@@ -4,7 +4,7 @@
 public class SeriesTest
 {
     public SnowflakeService SnowflakeService = null!;
-    public Dictionary<string, Team> Teams = null!;
+    public Dictionary<string, ITeam> Teams = null!;
     public Series Series = null!;
 
     [TestInitialize]
@@ -227,8 +227,8 @@ public class SeriesTest
     [TestMethod]
     public void RemoveTeamTest()
     {
-        Team team1 = Teams.Values.First();
-        Team team2 = Teams.Values.Last();
+        ITeam team1 = Teams.Values.First();
+        ITeam team2 = Teams.Values.Last();
 
         Assert.AreEqual(2, Series.Teams.Count, "There should be 2 teams in the series");
 

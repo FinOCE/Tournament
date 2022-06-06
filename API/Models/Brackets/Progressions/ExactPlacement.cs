@@ -5,7 +5,7 @@
 /// </summary>
 public class ExactPlacement : IPlacement
 {
-    public Dictionary<string, Team> Teams { get; init; } = new();
+    public Dictionary<string, ITeam> Teams { get; init; } = new();
     public int Position { get; init; }
 
     /// <exception cref="ArgumentException"></exception>
@@ -17,7 +17,7 @@ public class ExactPlacement : IPlacement
         Position = position;
     }
 
-    public bool AddTeam(Team team)
+    public bool AddTeam(ITeam team)
     {
         if (Teams.Keys.Count == 1)
             return false;

@@ -130,11 +130,11 @@ public class BracketBuilderTest
         }
 
         // Act
-        Team[] teams = Builder.GetOrderedTeams();
+        ITeam[] teams = Builder.GetOrderedTeams();
         bool isOutOfOrder = false;
         int previousSeed = int.MinValue;
 
-        foreach (Team team in teams)
+        foreach (ITeam team in teams)
             if (Builder.Seeds[team.Id] < previousSeed)
             {
                 isOutOfOrder = true;

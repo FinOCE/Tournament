@@ -34,6 +34,9 @@ public class UserTest
         Assert.ThrowsException<ArgumentException>(() => {
             User user = new(snowflake.ToString(), "Username", 0);
         });
+        Assert.ThrowsException<ArgumentException>(() => {
+            User user = new(snowflake.ToString(), "Username", 0, "invalid.icon");
+        });
         Assert.IsInstanceOfType(new User(snowflake.ToString(), "Username", 1234), typeof(User));
     }
 
@@ -75,18 +78,55 @@ public class UserTest
     }
 
     [TestMethod]
+    public void SetIconTest()
+    {
+        SnowflakeService snowflakeService = new();
+        Snowflake snowflake = snowflakeService.Generate();
+
+        User user = new(snowflake.ToString(), "User", 1234);
+
+        Assert.AreEqual(User.DefaultIcon, user.Icon);
+
+        string validIconName = "1234567890123456";
+        Assert.IsTrue(user.SetIcon(validIconName));
+        Assert.AreEqual(validIconName, user.Icon);
+
+        Assert.IsFalse(user.SetIcon(""));
+        Assert.IsFalse(user.SetIcon("InvalidLength"));
+        Assert.IsFalse(user.SetIcon("Has a space"));
+        Assert.IsFalse(user.SetIcon("Some!invalid_chars"));
+        Assert.AreEqual(validIconName, user.Icon);
+
+        Assert.IsTrue(user.SetIcon(null));
+        Assert.AreEqual(Team.DefaultIcon, user.Icon);
+    }
+
+    [TestMethod]
+    public void VerifyTest()
+    {
+        SnowflakeService snowflakeService = new();
+        Snowflake snowflake = snowflakeService.Generate();
+
+        User user = new(snowflake.ToString(), "User", 1234);
+        Assert.IsFalse(user.Verified);
+
+        user.Verify();
+        Assert.IsTrue(user.Verified);
+    }
+
+    [TestMethod]
     public void HasPermissionTest()
     {
         SnowflakeService snowflakeService = new();
         Snowflake snowflake = snowflakeService.Generate();
 
-        User user1 = new(snowflake.ToString(), "Username", 1234, 0);
-        Assert.IsFalse(user1.HasPermission(UserPermission.Administrator));
+        User user = new(snowflake.ToString(), "Username", 1234);
+        Assert.IsFalse(user.HasPermission(UserPermission.Administrator));
 
-        User user2 = new(snowflake.ToString(), "Username", 1234, 1);
-        Assert.IsTrue(user2.HasPermission(UserPermission.Administrator));
+        user.AddPermission(UserPermission.Administrator);
+        Assert.IsTrue(user.HasPermission(UserPermission.Administrator));
 
-        User user3 = new(snowflake.ToString(), "Username", 1234, (int)UserPermission.Administrator);
+        User user3 = new(snowflake.ToString(), "Username", 1234, null, false, (int)UserPermission.Administrator);
         Assert.IsTrue(user3.HasPermission(UserPermission.Administrator));
     }
 
@@ -96,7 +136,7 @@ public class UserTest
         SnowflakeService snowflakeService = new();
         Snowflake snowflake = snowflakeService.Generate();
 
-        User user = new(snowflake.ToString(), "Username", 1234, 0);
+        User user = new(snowflake.ToString(), "Username", 1234);
         Assert.IsFalse(user.HasPermission(UserPermission.Administrator));
 
         user.AddPermission(UserPermission.Administrator);
@@ -112,7 +152,7 @@ public class UserTest
         SnowflakeService snowflakeService = new();
         Snowflake snowflake = snowflakeService.Generate();
 
-        User user = new(snowflake.ToString(), "Username", 1234, (int)UserPermission.Administrator);
+        User user = new(snowflake.ToString(), "Username", 1234, null, false, (int)UserPermission.Administrator);
         Assert.IsTrue(user.HasPermission(UserPermission.Administrator));
 
         user.RemovePermission(UserPermission.Administrator);

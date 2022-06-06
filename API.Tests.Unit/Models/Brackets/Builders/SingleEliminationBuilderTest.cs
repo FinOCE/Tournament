@@ -25,6 +25,15 @@ public class SingleElminationBuilderTest
         }
     }
 
+    private void AddSoloTeams(int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            SoloTeam team = new(new User(SnowflakeService.Generate().ToString(), $"User {i + 1}", 1234));
+            Builder.AddTeam(team, count - i);
+        }
+    }
+
     [TestMethod]
     public void GenerateTest_00Teams()
     {
@@ -42,7 +51,7 @@ public class SingleElminationBuilderTest
     public void GenerateTest_01Teams()
     {
         // Arrange
-        AddTeams(1);
+        AddSoloTeams(1);
 
         // Act
         IStructure root = Builder.Generate();
@@ -76,7 +85,7 @@ public class SingleElminationBuilderTest
     public void GenerateTest_03Teams()
     {
         // Arrange
-        AddTeams(3);
+        AddSoloTeams(3);
 
         // Act
         IStructure root = Builder.Generate();
@@ -84,10 +93,10 @@ public class SingleElminationBuilderTest
         // Assert
         Assert.IsNull(root.Left, "The left child should not exist");
         Assert.IsNotNull(root.Right, "The right child should exist");
-        Assert.IsTrue(root.Series.Teams.Values.Any(t => t.Name == "Team 1"), "Team 1 should be in the final");
+        Assert.IsTrue(root.Series.Teams.Values.Any(t => t.Name == "User 1"), "Team 1 should be in the final");
         Assert.AreEqual(1, root.Series.Teams.Count, "There should only be one team in the finals");
-        Assert.IsTrue(root.Right.Series.Teams.Values.Any(t => t.Name == "Team 2"), "Team 2 should be in the semi-final");
-        Assert.IsTrue(root.Right.Series.Teams.Values.Any(t => t.Name == "Team 3"), "Team 3 should be in the semi-final");
+        Assert.IsTrue(root.Right.Series.Teams.Values.Any(t => t.Name == "User 2"), "Team 2 should be in the semi-final");
+        Assert.IsTrue(root.Right.Series.Teams.Values.Any(t => t.Name == "User 3"), "Team 3 should be in the semi-final");
         Assert.AreEqual(2, root.Right.Series.Teams.Count, "There should be two teams in the semi-final");
         Assert.AreEqual(1, root.Children, "There should only be the final and single semi-final series");
     }
@@ -118,21 +127,21 @@ public class SingleElminationBuilderTest
     public void GenerateTest_09Teams()
     {
         // Arrange
-        AddTeams(9);
+        AddSoloTeams(9);
 
         // Act
         IStructure root = Builder.Generate();
 
         // Assert
-        Assert.IsTrue(root.Left!.Left!.Series.Teams.Values.Any(t => t.Name == "Team 1"), "Team 1 should be in this series");
-        Assert.IsTrue(root.Right!.Left!.Series.Teams.Values.Any(t => t.Name == "Team 2"), "Team 2 should be in this series");
-        Assert.IsTrue(root.Right!.Right!.Series.Teams.Values.Any(t => t.Name == "Team 3"), "Team 3 should be in this series");
-        Assert.IsTrue(root.Left!.Right!.Series.Teams.Values.Any(t => t.Name == "Team 4"), "Team 4 should be in this series");
-        Assert.IsTrue(root.Left!.Right!.Series.Teams.Values.Any(t => t.Name == "Team 5"), "Team 5 should be in this series");
-        Assert.IsTrue(root.Right!.Right!.Series.Teams.Values.Any(t => t.Name == "Team 6"), "Team 6 should be in this series");
-        Assert.IsTrue(root.Right!.Left!.Series.Teams.Values.Any(t => t.Name == "Team 7"), "Team 7 should be in this series");
-        Assert.IsTrue(root.Left!.Left!.Right!.Series.Teams.Values.Any(t => t.Name == "Team 8"), "Team 8 should be in this series");
-        Assert.IsTrue(root.Left!.Left!.Right!.Series.Teams.Values.Any(t => t.Name == "Team 9"), "Team 9 should be in this series");
+        Assert.IsTrue(root.Left!.Left!.Series.Teams.Values.Any(t => t.Name == "User 1"), "Team 1 should be in this series");
+        Assert.IsTrue(root.Right!.Left!.Series.Teams.Values.Any(t => t.Name == "User 2"), "Team 2 should be in this series");
+        Assert.IsTrue(root.Right!.Right!.Series.Teams.Values.Any(t => t.Name == "User 3"), "Team 3 should be in this series");
+        Assert.IsTrue(root.Left!.Right!.Series.Teams.Values.Any(t => t.Name == "User 4"), "Team 4 should be in this series");
+        Assert.IsTrue(root.Left!.Right!.Series.Teams.Values.Any(t => t.Name == "User 5"), "Team 5 should be in this series");
+        Assert.IsTrue(root.Right!.Right!.Series.Teams.Values.Any(t => t.Name == "User 6"), "Team 6 should be in this series");
+        Assert.IsTrue(root.Right!.Left!.Series.Teams.Values.Any(t => t.Name == "User 7"), "Team 7 should be in this series");
+        Assert.IsTrue(root.Left!.Left!.Right!.Series.Teams.Values.Any(t => t.Name == "User 8"), "Team 8 should be in this series");
+        Assert.IsTrue(root.Left!.Left!.Right!.Series.Teams.Values.Any(t => t.Name == "User 9"), "Team 9 should be in this series");
     }
 
     [TestMethod]
@@ -167,53 +176,53 @@ public class SingleElminationBuilderTest
     public void PlaythroughTest()
     {
         // Arrange
-        AddTeams(6);
+        AddSoloTeams(6);
         Builder.SetBestOf(1);
 
         // Act
         IStructure root = Builder.Generate();
 
         // Game 1: Team 3 vs 6 - Winner: 3 (Quarter Finals)
-        IStructure structure1 = root.FindStructureWithTeam(Builder.Teams.Values.First(t => t.Name == "Team 3").Id)!;
+        IStructure structure1 = root.FindStructureWithTeam(Builder.Teams.Values.First(t => t.Name == "User 3").Id)!;
         structure1.Series.Start();
         Game game1 = new(SnowflakeService.Generate().ToString(), structure1.Series);
-        game1.SetScore(structure1.Series.Teams.Values.First(t => t.Name == "Team 3").Id, 1);
+        game1.SetScore(structure1.Series.Teams.Values.First(t => t.Name == "User 3").Id, 1);
         game1.Finish();
         structure1.Series.Finish();
 
         // Game 2: Team 4 vs 5 - Winner: 5 (Quarter Finals)
-        IStructure structure2 = root.FindStructureWithTeam(Builder.Teams.Values.First(t => t.Name == "Team 4").Id)!;
+        IStructure structure2 = root.FindStructureWithTeam(Builder.Teams.Values.First(t => t.Name == "User 4").Id)!;
         structure2.Series.Start();
         Game game2 = new(SnowflakeService.Generate().ToString(), structure2.Series);
-        game2.SetScore(structure2.Series.Teams.Values.First(t => t.Name == "Team 5").Id, 1);
+        game2.SetScore(structure2.Series.Teams.Values.First(t => t.Name == "User 5").Id, 1);
         game2.Finish();
         structure2.Series.Finish();
 
         // Game 3: Team 2 vs 3 - Winner: 2 (Semi Finals)
-        IStructure structure3 = root.FindStructureWithTeam(Builder.Teams.Values.First(t => t.Name == "Team 2").Id)!;
+        IStructure structure3 = root.FindStructureWithTeam(Builder.Teams.Values.First(t => t.Name == "User 2").Id)!;
         structure3.Series.Start();
         Game game3 = new(SnowflakeService.Generate().ToString(), structure3.Series);
-        game3.SetScore(structure3.Series.Teams.Values.First(t => t.Name == "Team 2").Id, 1);
+        game3.SetScore(structure3.Series.Teams.Values.First(t => t.Name == "User 2").Id, 1);
         game3.Finish();
         structure3.Series.Finish();
 
         // Game 4: Team 1 vs 5 - Winner: 1 (Semi Finals)
-        IStructure structure4 = root.FindStructureWithTeam(Builder.Teams.Values.First(t => t.Name == "Team 1").Id)!;
+        IStructure structure4 = root.FindStructureWithTeam(Builder.Teams.Values.First(t => t.Name == "User 1").Id)!;
         structure4.Series.Start();
         Game game4 = new(SnowflakeService.Generate().ToString(), structure4.Series);
-        game4.SetScore(structure4.Series.Teams.Values.First(t => t.Name == "Team 1").Id, 1);
+        game4.SetScore(structure4.Series.Teams.Values.First(t => t.Name == "User 1").Id, 1);
         game4.Finish();
         structure4.Series.Finish();
 
         // Game 5: Team 1 vs 2 - Winner: 1 (Finals)
-        IStructure structure5 = root.FindStructureWithTeam(Builder.Teams.Values.First(t => t.Name == "Team 1").Id)!;
+        IStructure structure5 = root.FindStructureWithTeam(Builder.Teams.Values.First(t => t.Name == "User 1").Id)!;
         structure5.Series.Start();
         Game game5 = new(SnowflakeService.Generate().ToString(), structure5.Series);
-        game5.SetScore(structure5.Series.Teams.Values.First(t => t.Name == "Team 1").Id, 1);
+        game5.SetScore(structure5.Series.Teams.Values.First(t => t.Name == "User 1").Id, 1);
         game5.Finish();
         structure5.Series.Finish();
 
         // Assert
-        root.Series.WinnerProgression!.Teams.ContainsKey(Builder.Teams.Values.First(t => t.Name == "Team 1").Id);
+        root.Series.WinnerProgression!.Teams.ContainsKey(Builder.Teams.Values.First(t => t.Name == "User 1").Id);
     }
 }
