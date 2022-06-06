@@ -1,4 +1,4 @@
-﻿namespace API.Models;
+﻿namespace API.Models.Users;
 
 /// <summary>
 /// A user that is a member of a team
@@ -41,7 +41,7 @@ public class TeamMember
     }
 
     /// <summary>
-    /// Determine if the member 
+    /// Determine if the member has the given permission
     /// </summary>
     public bool HasPermission(TeamRolePermission permission)
     {

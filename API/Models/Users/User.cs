@@ -1,4 +1,4 @@
-﻿namespace API.Models;
+﻿namespace API.Models.Users;
 
 /// <summary>
 /// A user of the service
