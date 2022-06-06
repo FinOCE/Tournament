@@ -41,6 +41,8 @@ public class SnowflakeTest
 
         Assert.AreEqual(dateTime, Snowflake.GetTimestamp(snowflake.ToString()));
 
-        // TODO: Test invalid timestamps
+        Assert.ThrowsException<OverflowException>(() => Snowflake.GetTimestamp("99999999999999999999999"));
+        Assert.ThrowsException<FormatException>(() => Snowflake.GetTimestamp("a"));
+        Assert.ThrowsException<FormatException>(() => Snowflake.GetTimestamp(""));
     }
 }
