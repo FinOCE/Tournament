@@ -3,18 +3,28 @@
 /// <summary>
 /// A team that comprises of members
 /// </summary>
-public class Team : ITeam
+public class Team : ITeam, ISociable, IVerifiable
 {
     public const string DefaultIcon = ""; // TODO: Create default icon path
+
+    private ISociable _Sociable = new Sociable();
+    private IVerifiable _Verifiable = new Verifiable();
 
     public string Id { get; init; }
     public string Name { get; private set; }
     public string Icon { get; private set; }
-    public bool Verified { get; private set; }
     public Dictionary<string, TeamMember> Members { get; private set; }
+    public Dictionary<string, Social> Socials { get { return _Sociable.Socials; } }
+    public bool Verified { get { return _Verifiable.Verified; } }
+
 
     /// <exception cref="ArgumentException"></exception>
-    public Team(string id, string name, string? icon, bool verified)
+    public Team(
+        string id,
+        string name,
+        string? icon = null,
+        bool verified = false,
+        Dictionary<string,Social>? socials = null)
     {
         // Validate arguments
         if (!Snowflake.Validate(id))
@@ -27,8 +37,13 @@ public class Team : ITeam
         Id = id;
         Name = name;
         Icon = icon ?? DefaultIcon;
-        Verified = verified;
         Members = new();
+
+        if (socials is not null)
+            SetSocials(socials);
+
+        if (verified)
+            Verify();
     }
 
     /// <summary>
@@ -57,14 +72,6 @@ public class Team : ITeam
             .SetInvalidRegex(new(@"[^\w]"))
             .OnSuccess(icon => Icon = icon ?? DefaultIcon)
             .Test(icon);
-    }
-
-    /// <summary>
-    /// Mark the team as verified
-    /// </summary>
-    public void Verify()
-    {
-        Verified = true;
     }
 
     /// <summary>
@@ -101,5 +108,25 @@ public class Team : ITeam
 
         Members.Remove(id);
         return true;
+    }
+
+    public void SetSocials(Dictionary<string, Social> socials)
+    {
+        _Sociable.SetSocials(socials);
+    }
+
+    public bool AddSocial(Social social)
+    {
+        return _Sociable.AddSocial(social);
+    }
+
+    public bool RemoveSocial(string id)
+    {
+        return _Sociable.RemoveSocial(id);
+    }
+
+    public void Verify()
+    {
+        _Verifiable.Verify();
     }
 }

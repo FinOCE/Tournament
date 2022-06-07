@@ -3,17 +3,21 @@
 /// <summary>
 /// A user of the service
 /// </summary>
-public class User
+public class User : ISociable, IVerifiable
 {
     public const string DefaultIcon = "1234567890123456"; // TODO: Create default icon path
+
+    private ISociable _Sociable = new Sociable();
+    private IVerifiable _Verifiable = new Verifiable();
 
     public string Id { get; init; }
     public string Username { get; private set; }
     public int Discriminator { get; private set; }
     public string Icon { get; private set; }
-    public bool Verified { get; private set; }
     public DateTime Timestamp { get; init; }
     private int _Permissions { get; set; }
+    public Dictionary<string, Social> Socials { get { return _Sociable.Socials; } }
+    public bool Verified { get { return _Verifiable.Verified; } }
 
     public string Tag
     {
@@ -21,7 +25,14 @@ public class User
     }
 
     /// <exception cref="ArgumentException"></exception>
-    public User(string id, string username, int discriminator, string? icon = null, bool verified = false, int permissions = 0)
+    public User(
+        string id,
+        string username,
+        int discriminator,
+        string? icon = null,
+        bool verified = false,
+        Dictionary<string, Social>? socials = null,
+        int permissions = 0)
     {
         // Validate arguments
         if (!Snowflake.Validate(id))
@@ -40,10 +51,15 @@ public class User
         Id = id;
         Username = username;
         Icon = icon ?? DefaultIcon;
-        Verified = verified;
         Discriminator = discriminator;
         Timestamp = Snowflake.GetTimestamp(id);
         _Permissions = permissions;
+
+        if (socials is not null)
+            SetSocials(socials);
+
+        if (verified)
+            Verify();
     }
 
     /// <summary>
@@ -89,14 +105,6 @@ public class User
     }
 
     /// <summary>
-    /// Mark the user as verified
-    /// </summary>
-    public void Verify()
-    {
-        Verified = true;
-    }
-
-    /// <summary>
     /// Check if the user has a permission
     /// </summary>
     public bool HasPermission(UserPermission permission)
@@ -118,6 +126,26 @@ public class User
     public void RemovePermission(UserPermission permission)
     {
         _Permissions &= ~(int)permission;
+    }
+
+    public void SetSocials(Dictionary<string, Social> socials)
+    {
+        _Sociable.SetSocials(socials);
+    }
+
+    public bool AddSocial(Social social)
+    {
+        return _Sociable.AddSocial(social);
+    }
+
+    public bool RemoveSocial(string id)
+    {
+        return _Sociable.RemoveSocial(id);
+    }
+
+    public void Verify()
+    {
+        _Verifiable.Verify();
     }
 }
 

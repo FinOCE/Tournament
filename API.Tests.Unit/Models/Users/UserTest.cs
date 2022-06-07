@@ -102,19 +102,6 @@ public class UserTest
     }
 
     [TestMethod]
-    public void VerifyTest()
-    {
-        SnowflakeService snowflakeService = new();
-        Snowflake snowflake = snowflakeService.Generate();
-
-        User user = new(snowflake.ToString(), "User", 1234);
-        Assert.IsFalse(user.Verified);
-
-        user.Verify();
-        Assert.IsTrue(user.Verified);
-    }
-
-    [TestMethod]
     public void HasPermissionTest()
     {
         SnowflakeService snowflakeService = new();
@@ -126,7 +113,7 @@ public class UserTest
         user.AddPermission(UserPermission.Administrator);
         Assert.IsTrue(user.HasPermission(UserPermission.Administrator));
 
-        User user3 = new(snowflake.ToString(), "Username", 1234, null, false, (int)UserPermission.Administrator);
+        User user3 = new(snowflake.ToString(), "Username", 1234, null, false, permissions: (int)UserPermission.Administrator);
         Assert.IsTrue(user3.HasPermission(UserPermission.Administrator));
     }
 
@@ -152,7 +139,7 @@ public class UserTest
         SnowflakeService snowflakeService = new();
         Snowflake snowflake = snowflakeService.Generate();
 
-        User user = new(snowflake.ToString(), "Username", 1234, null, false, (int)UserPermission.Administrator);
+        User user = new(snowflake.ToString(), "Username", 1234, null, false, permissions: (int)UserPermission.Administrator);
         Assert.IsTrue(user.HasPermission(UserPermission.Administrator));
 
         user.RemovePermission(UserPermission.Administrator);

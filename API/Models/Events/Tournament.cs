@@ -3,10 +3,13 @@
 /// <summary>
 /// A tournament that can include events
 /// </summary>
-public class Tournament
+public class Tournament : ISociable, IVerifiable
 {
     public const string DefaultIcon = "1234567890123456"; // TODO: Create default icon path
     public const string DefaultBanner = "1234567890123456"; // TODO: Create default banner path
+
+    private ISociable _Sociable = new Sociable();
+    private IVerifiable _Verifiable = new Verifiable();
 
     public string Id { get; init; }
     public string Name { get; private set; }
@@ -16,10 +19,10 @@ public class Tournament
     public string Icon { get; private set; }
     public string Banner { get; private set; }
     public Game? Game { get; private set; }
-    public Dictionary<string, Social> Socials { get; init; }
-    public bool Verified { get; private set; }
     // TODO: Include a dictionary of events (new class)
     // TODO: Include a section for prizes
+    public Dictionary<string, Social> Socials { get { return _Sociable.Socials; } }
+    public bool Verified { get { return _Verifiable.Verified; } }
 
     /// <exception cref="ArgumentException"></exception>
     public Tournament(
@@ -59,8 +62,12 @@ public class Tournament
         Banner = banner ?? DefaultBanner;
         Coordinators = coordinators ?? new();
         Game = game;
-        Socials = socials ?? new();
-        Verified = verified;
+
+        if (socials is not null)
+            SetSocials(socials);
+
+        if (verified)
+            Verify();
     }
 
     /// <summary>
@@ -135,35 +142,23 @@ public class Tournament
             .Test(banner);
     }
 
-    /// <summary>
-    /// Add a social link to the tournament
-    /// </summary>
+    public void SetSocials(Dictionary<string, Social> socials)
+    {
+        _Sociable.SetSocials(socials);
+    }
+
     public bool AddSocial(Social social)
     {
-        if (Socials.ContainsKey(social.Id))
-            return false;
-
-        Socials.Add(social.Id, social);
-        return true;
+        return _Sociable.AddSocial(social);
     }
 
-    /// <summary>
-    /// Remove a social link from the tournament
-    /// </summary>
     public bool RemoveSocial(string id)
     {
-        if (!Socials.ContainsKey(id))
-            return false;
-
-        Socials.Remove(id);
-        return true;
+        return _Sociable.RemoveSocial(id);
     }
 
-    /// <summary>
-    /// Mark the tournament as verified
-    /// </summary>
     public void Verify()
     {
-        Verified = true;
+        _Verifiable.Verify();
     }
 }

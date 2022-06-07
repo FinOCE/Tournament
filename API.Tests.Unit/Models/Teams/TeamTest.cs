@@ -67,19 +67,6 @@ public class TeamTest
     }
 
     [TestMethod]
-    public void VerifyTest()
-    {
-        SnowflakeService snowflakeService = new();
-        Snowflake snowflake = snowflakeService.Generate();
-
-        Team team = new(snowflake.ToString(), "Team", null, false);
-        Assert.IsFalse(team.Verified);
-
-        team.Verify();
-        Assert.IsTrue(team.Verified);
-    }
-
-    [TestMethod]
     public void AddMemberTest_TeamMember()
     {
         SnowflakeService snowflakeService = new();

@@ -3,10 +3,12 @@
 /// <summary>
 /// A video game
 /// </summary>
-public class Game
+public class Game : ISociable
 {
     public const string DefaultIcon = "1234567890123456"; // TODO: Create default icon path
     public const string DefaultBanner = "1234567890123456"; // TODO: Create default icon banner
+
+    private ISociable _Sociable = new Sociable();
 
     public string Id { get; init; }
     public string Name { get; private set; }
@@ -14,8 +16,16 @@ public class Game
     public string? Description { get; private set; }
     public string Icon { get; private set; }
     public string Banner { get; private set; }
+    public Dictionary<string, Social> Socials { get { return _Sociable.Socials; } }
 
-    public Game(string id, string name, string[]? categories = null, string? description = null, string? icon = null, string? banner = null)
+    public Game(
+        string id,
+        string name,
+        string[]? categories = null,
+        string? description = null,
+        string? icon = null,
+        string? banner = null,
+        Dictionary<string, Social>? socials = null)
     {
         // Validate
         if (!Snowflake.Validate(id))
@@ -45,6 +55,9 @@ public class Game
         Description = description;
         Icon = icon ?? DefaultIcon;
         Banner = banner ?? DefaultBanner;
+
+        if (socials is not null)
+            SetSocials(socials);
     }
 
     /// <summary>
@@ -128,5 +141,20 @@ public class Game
             .SetInvalidRegex(new(@"[^\w]"))
             .OnSuccess(banner => Banner = banner ?? DefaultBanner)
             .Test(banner);
+    }
+
+    public void SetSocials(Dictionary<string, Social> socials)
+    {
+        _Sociable.SetSocials(socials);
+    }
+
+    public bool AddSocial(Social social)
+    {
+        return _Sociable.AddSocial(social);
+    }
+
+    public bool RemoveSocial(string id)
+    {
+        return _Sociable.RemoveSocial(id);
     }
 }

@@ -5,6 +5,7 @@ global using System.Linq;
 global using System.Text.RegularExpressions;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using API.Models;
+global using API.Models.Attributes;
 global using API.Models.Brackets.Builders;
 global using API.Models.Brackets.Progressions;
 global using API.Models.Brackets.Structures;

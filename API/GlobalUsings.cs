@@ -2,6 +2,7 @@
 global using System.Text;
 global using System.Text.RegularExpressions;
 global using API.Models;
+global using API.Models.Attributes;
 global using API.Models.Brackets.Progressions;
 global using API.Models.Brackets.Structures;
 global using API.Models.Events;
