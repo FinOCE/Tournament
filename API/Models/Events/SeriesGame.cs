@@ -6,7 +6,8 @@ public class SeriesGame
     public string Name { get; init; }
     public Series Series { get; init; }
     public Dictionary<string, int> Score { get; init; }
-    public bool Finished { get; private set; }
+    public bool Finished { get { return FinishedTimestamp is not null; } }
+    public DateTime? FinishedTimestamp { get; private set; }
     public string? Winner
     {
         get
@@ -18,41 +19,46 @@ public class SeriesGame
         }
     }
 
-    public SeriesGame(string id, Series series)
+    /// <exception cref="ArgumentException"></exception>
+    public SeriesGame(
+        string id,
+        Series series,
+        Dictionary<string, int>? score = null,
+        DateTime? finishedTimestamp = null)
     {
-        // Validate arguments
+        // Validate
         if (!Snowflake.Validate(id))
             throw new ArgumentException($"Invalid {nameof(id)} provided");
 
-        // Assign arguments to game
-        Id = id;
-        Name = $"Game {series.Games.Keys.Where(gameId => ulong.Parse(gameId) < ulong.Parse(id)).ToArray().Length + 1}";
-        Series = series;
-        Score = new();
-        foreach (string teamId in Series.Teams.Keys)
-            Score.Add(teamId, 0);
+        if (score is not null)
+        {
+            if (series.Teams.Keys.Count != score.Keys.Count || !series.Teams.Keys.All(id => score.ContainsKey(id)))
+                throw new ArgumentException($"Invalid {nameof(series)} or {nameof(score)} provided");
 
-        Series.Games.Add(Id, this);
-    }
+            foreach (int s in score.Values)
+                if (s < 0)
+                    throw new ArgumentException($"Invalid {nameof(score)} provided");
 
-    public SeriesGame(string id, Series series, Dictionary<string, int> score)
-    {
-        // Validate arguments
-        if (!Snowflake.Validate(id))
-            throw new ArgumentException($"Invalid {nameof(id)} provided");
+            if (finishedTimestamp is not null && score.Values.All(s => s.Equals(score.Values.First())))
+                throw new ArgumentException($"Game with a tied score cannot have a timestamp for finishing");
+        }
+        else
+        {
+            score = new();
+            foreach (string teamId in series.Teams.Keys)
+                score.Add(teamId, 0);
 
-        if (series.Teams.Keys.Count != score.Keys.Count || !series.Teams.Keys.All(id => score.ContainsKey(id)))
-            throw new ArgumentException($"Invalid {nameof(series)} or {nameof(score)} provided");
+            if (finishedTimestamp is not null)
+                throw new ArgumentException($"Game with no score cannot have a timestamp for finishing");
+        }
 
-        foreach (int s in score.Values)
-            if (s < 0)
-                throw new ArgumentException($"Invalid {nameof(score)} provided");
 
-        // Assign arguments to game
+        // Instantiate
         Id = id;
         Name = $"Game {series.Games.Keys.Where(gameId => ulong.Parse(gameId) < ulong.Parse(id)).ToArray().Length + 1}";
         Series = series;
         Score = score;
+        FinishedTimestamp = finishedTimestamp;
 
         Series.Games.Add(Id, this);
     }
@@ -74,16 +80,14 @@ public class SeriesGame
     /// </summary>
     public bool SetScore(string id, int score)
     {
-        if (!Finished && Score.ContainsKey(id))
-        {
-            if (score < 0)
-                return false;
-
-            Score[id] = score;
-            return true;
-        }
-        else
+        if (Finished || !Score.ContainsKey(id))
             return false;
+
+        if (score < 0)
+            return false;
+
+        Score[id] = score;
+        return true;
     }
 
     /// <summary>
@@ -95,7 +99,7 @@ public class SeriesGame
         if (Score.Values.ElementAt(0) == Score.Values.ElementAt(1))
             return false;
 
-        Finished = true;
+        FinishedTimestamp = DateTime.UtcNow;
         return true;
     }
 }

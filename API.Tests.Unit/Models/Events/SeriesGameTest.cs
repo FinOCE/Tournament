@@ -24,6 +24,21 @@ public class SeriesGameTest
     }
 
     [TestMethod]
+    public void FinishedTest()
+    {
+        // Arrange
+        string winnerId = Game.Series.Teams.Keys.First();
+
+        // Act
+        Game.SetScore(winnerId, 1);
+        Game.Finish();
+
+        // Assert
+        Assert.IsTrue(Game.Finished, "The game should be marked as finished");
+        Assert.IsNotNull(Game.FinishedTimestamp, "The finished timestamp should be set");
+    }
+
+    [TestMethod]
     public void WinnerTest_Tie()
     {
         Game.Finish();
