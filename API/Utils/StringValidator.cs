@@ -5,6 +5,7 @@ public class StringValidator
     public int? MinimumLength { get; private set; } = null;
     public int? MaximumLength { get; private set; } = null;
     public Regex? InvalidRegex { get; private set; } = null;
+    public Regex? ValidRegex { get; private set; } = null;
     public bool Nullable { get; private set; } = false;
     public bool UseTrim { get; private set; } = false;
     public Action<string?>? SuccessAction { get; private set; } = null;
@@ -30,6 +31,9 @@ public class StringValidator
                 success = false;
 
             if (InvalidRegex is not null && InvalidRegex.IsMatch(str))
+                success = false;
+
+            if (ValidRegex is not null && !ValidRegex.IsMatch(str))
                 success = false;
         }
         else if (!Nullable)
@@ -69,6 +73,15 @@ public class StringValidator
     public StringValidator SetInvalidRegex(Regex? regex)
     {
         InvalidRegex = regex;
+        return this;
+    }
+
+    /// <summary>
+    /// Add a regex to test for valid strings
+    /// </summary>
+    public StringValidator SetValidRegex(Regex? regex)
+    {
+        ValidRegex = regex;
         return this;
     }
 

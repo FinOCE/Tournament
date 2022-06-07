@@ -78,11 +78,13 @@ public class Game : ISociable
     /// </summary>
     public bool AddCategory(string category)
     {
+        if (category.Equals("") || Categories.Contains(category))
+            return false;
+
         return new StringValidator()
             .Trim()
             .SetMinimumLength(1)
             .SetMaximumLength(16)
-            .SetInvalidRegex(new(@"[^\w-. ]"))
             .OnSuccess(c => Categories = Categories.Append(c!).ToArray())
             .Test(category);
     }

@@ -12,12 +12,14 @@ public class StringValidatorTest
 
         int minimumLength = 2;
         int maximumLength = 5;
-        Regex invalidRegex = new("!");
+        Regex invalidRegex = new(@"!");
+        Regex validRegex = new(@"\d");
 
         StringValidator validator = new StringValidator()
             .SetMinimumLength(minimumLength)
             .SetMaximumLength(maximumLength)
             .SetInvalidRegex(invalidRegex)
+            .SetValidRegex(validRegex)
             .AllowNull()
             .Trim()
             .OnSuccess((string? str) => successfulTests++)
@@ -26,6 +28,7 @@ public class StringValidatorTest
         string shortStr = "1";
         string longStr = "123456";
         string invalidStr = "Mmm!";
+        string failStr = "a";
         string goodStr = "1234";
         string atMinStr = "12";
         string atMaxStr = "12345";
@@ -35,6 +38,7 @@ public class StringValidatorTest
         bool shortStrValid = validator.Test(shortStr);
         bool longStrValid = validator.Test(longStr);
         bool invalidStrValid = validator.Test(invalidStr);
+        bool failStrValid = validator.Test(failStr);
         bool goodStrValid = validator.Test(goodStr);
         bool atMinStrValid = validator.Test(atMinStr);
         bool atMaxStrvalid = validator.Test(atMaxStr);
@@ -42,16 +46,17 @@ public class StringValidatorTest
         bool trimStrValid = validator.Test(trimStr);
 
         // Assert
-        Assert.IsFalse(shortStrValid);
-        Assert.IsFalse(longStrValid);
-        Assert.IsFalse(invalidStrValid);
-        Assert.IsTrue(goodStrValid);
-        Assert.IsTrue(atMinStrValid);
-        Assert.IsTrue(atMaxStrvalid);
-        Assert.IsTrue(nullStrValid);
-        Assert.IsTrue(trimStrValid);
-        Assert.AreEqual(5, successfulTests);
-        Assert.AreEqual(3, failedTests);
+        Assert.IsFalse(shortStrValid, "Strings under minimum length should not work");
+        Assert.IsFalse(longStrValid, "String longer than maximum length should not work");
+        Assert.IsFalse(invalidStrValid, "Strings failing invalidRegex should not work");
+        Assert.IsFalse(failStrValid, "Strings failing validRegex should not work");
+        Assert.IsTrue(goodStrValid, "A well formed string should work");
+        Assert.IsTrue(atMinStrValid, "A string at minimum length should work");
+        Assert.IsTrue(atMaxStrvalid, "A string at maximum length should work");
+        Assert.IsTrue(nullStrValid, "A null value should work");
+        Assert.IsTrue(trimStrValid, "A string that is valid after trim should work");
+        Assert.AreEqual(5, successfulTests, "Passed test cound should match expected");
+        Assert.AreEqual(4, failedTests, "Failed test could should match expected");
     }
 
     [TestMethod]
@@ -94,6 +99,21 @@ public class StringValidatorTest
 
         // Assert
         Assert.AreEqual(invalidRegex, validator.InvalidRegex, "The invalid regex should have been updated");
+    }
+
+    [TestMethod]
+    [Ignore]
+    public void SetValidRegexTest()
+    {
+        // Arrange
+        StringValidator validator = new();
+        Regex validRegex = new(@"\w");
+
+        // Act
+        validator.SetValidRegex(validRegex);
+
+        // Assert
+        Assert.AreEqual(validRegex, validator.ValidRegex, "The valid regex should have been updated");
     }
 
     [TestMethod]

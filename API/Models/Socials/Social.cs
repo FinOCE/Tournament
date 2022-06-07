@@ -37,7 +37,7 @@ public class Social
         // Regex slightly modified from https://urlregex.com/
         return new StringValidator()
             .SetMinimumLength(1)
-            .SetInvalidRegex(new(@"^http(s ?)\:\/\/[0-9a-zA-Z]([-.\w] *[0-9a-zA-Z]) * (: (0-9) *) * (\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?$"))
+            .SetValidRegex(new(@"^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_=]*)?$"))
             .OnSuccess(link => Link = link!)
             .Test(link);
     }
