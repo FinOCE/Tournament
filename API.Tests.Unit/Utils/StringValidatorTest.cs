@@ -102,7 +102,6 @@ public class StringValidatorTest
     }
 
     [TestMethod]
-    [Ignore]
     public void SetValidRegexTest()
     {
         // Arrange

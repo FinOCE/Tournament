@@ -19,8 +19,8 @@ public class Tournament : ISociable, IVerifiable
     public string Icon { get; private set; }
     public string Banner { get; private set; }
     public Game? Game { get; private set; }
+    public Dictionary<string, Prize> Prizes { get; init; }
     // TODO: Include a dictionary of events (new class)
-    // TODO: Include a section for prizes
     public Dictionary<string, Social> Socials { get { return _Sociable.Socials; } }
     public bool Verified { get { return _Verifiable.Verified; } }
 
@@ -34,10 +34,14 @@ public class Tournament : ISociable, IVerifiable
         string? icon = DefaultIcon,
         string? banner = DefaultBanner,
         Game? game = null,
+        Dictionary<string, Prize>? prizes = null,
         Dictionary<string, Social>? socials = null,
         bool verified = false)
     {
         // Validate arguments
+        if (!Snowflake.Validate(id))
+            throw new ArgumentException($"Invalid {nameof(id)} provided");
+
         if (!SetName(name))
             throw new ArgumentException($"Invalid {nameof(name)} provided");
 
@@ -62,6 +66,7 @@ public class Tournament : ISociable, IVerifiable
         Banner = banner ?? DefaultBanner;
         Coordinators = coordinators ?? new();
         Game = game;
+        Prizes = prizes ?? new();
 
         if (socials is not null)
             SetSocials(socials);
@@ -113,6 +118,34 @@ public class Tournament : ISociable, IVerifiable
     }
 
     /// <summary>
+    /// Add a coordinator to the tournament
+    /// </summary>
+    /// <param name="coordinator">The coordinator to be added</param>
+    /// <returns>Whether or not the coordinator was successfully added</returns>
+    public bool AddCoordinator(Coordinator coordinator)
+    {
+        if (Coordinators.ContainsKey(coordinator.User.Id))
+            return false;
+
+        Coordinators.Add(coordinator.User.Id, coordinator);
+        return true;
+    }
+
+    /// <summary>
+    /// Removes a coordinator from the tournament
+    /// </summary>
+    /// <param name="id">The ID of the coordinator to be removed</param>
+    /// <returns>Whether or not the coordinator was successfully removed</returns>
+    public bool RemoveCoordinator(string id)
+    {
+        if (!Coordinators.ContainsKey(id))
+            return false;
+
+        Coordinators.Remove(id);
+        return true;
+    }
+
+    /// <summary>
     /// Set the icon of the tournament
     /// </summary>
     public bool SetIcon(string? icon)
@@ -140,6 +173,43 @@ public class Tournament : ISociable, IVerifiable
             .SetInvalidRegex(new(@"[^\w]"))
             .OnSuccess(banner => Banner = banner ?? DefaultBanner)
             .Test(banner);
+    }
+
+    /// <summary>
+    /// Set the game of the tournament
+    /// </summary>
+    /// <param name="game">The game the tournament is intended for</param>
+    public void SetGame(Game game)
+    {
+        Game = game;
+    }
+
+    /// <summary>
+    /// Add a prize to the tournament
+    /// </summary>
+    /// <param name="prize">The prize to be added</param>
+    /// <returns>Whether or not the prize was successfully added</returns>
+    public bool AddPrize(Prize prize)
+    {
+        if (Prizes.ContainsKey(prize.Id))
+            return false;
+
+        Prizes.Add(prize.Id, prize);
+        return true;
+    }
+
+    /// <summary>
+    /// Removes a prize from the tournament
+    /// </summary>
+    /// <param name="id">The ID of the prize to be removed</param>
+    /// <returns>Whether or not the prize was successfully removed</returns>
+    public bool RemovePrize(string id)
+    {
+        if (!Prizes.ContainsKey(id))
+            return false;
+
+        Prizes.Remove(id);
+        return true;
     }
 
     public void SetSocials(Dictionary<string, Social> socials)
