@@ -82,7 +82,7 @@ public class CoordinatorTest
         bool canManageSettingsAfterCall = coordinator.HasPermission(HostRolePermission.ManageSettings);
 
         // Assert
-        Assert.IsTrue(canSpectate, "The coordinator should be able to spectate matches");
+        Assert.IsTrue(canSpectate, "The coordinator should be able to spectate games");
         Assert.IsFalse(canManageSettingsInitially, "The coordinator shouldn't be able to manage the settings initially");
         Assert.IsTrue(canManageSettingsAfterCall, "The coordinator should be able to manage settings after methdo call");
     }

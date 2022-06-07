@@ -9,6 +9,7 @@ global using API.Models.Brackets.Builders;
 global using API.Models.Brackets.Progressions;
 global using API.Models.Brackets.Structures;
 global using API.Models.Events;
+global using API.Models.Socials;
 global using API.Models.Teams;
 global using API.Models.Users;
 global using API.Services;

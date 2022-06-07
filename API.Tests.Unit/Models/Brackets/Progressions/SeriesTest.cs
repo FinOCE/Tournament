@@ -44,21 +44,21 @@ public class SeriesTest
         string team1Id = Series.Teams.Keys.First();
         string team2Id = Series.Teams.Keys.Last();
 
-        Game game1 = new(SnowflakeService.Generate().ToString(), Series);
+        SeriesGame game1 = new(SnowflakeService.Generate().ToString(), Series);
         game1.SetScore(team1Id, 1);
         game1.Finish();
         Series.Finish();
 
         Assert.IsFalse(Series.Finished, "The series should unsuccessfully finish an incomplete series");
 
-        Game game2 = new(SnowflakeService.Generate().ToString(), Series);
+        SeriesGame game2 = new(SnowflakeService.Generate().ToString(), Series);
         game2.SetScore(team2Id, 1);
         game2.Finish();
         Series.Finish();
 
         Assert.IsFalse(Series.Finished, "The series should unsuccessfully finish an incomplete series");
 
-        Game game3 = new(SnowflakeService.Generate().ToString(), Series);
+        SeriesGame game3 = new(SnowflakeService.Generate().ToString(), Series);
         game3.SetScore(team1Id, 1);
         game3.Finish();
         Series.Finish();
@@ -82,13 +82,13 @@ public class SeriesTest
 
         string winnerId = Series.Teams.Keys.First();
 
-        Game game1 = new(SnowflakeService.Generate().ToString(), Series);
+        SeriesGame game1 = new(SnowflakeService.Generate().ToString(), Series);
         game1.SetScore(winnerId, 1);
         game1.Finish();
 
         Assert.IsNull(Series.Winner, "1 win in a best of 3 should not allow a win");
 
-        Game game2 = new(SnowflakeService.Generate().ToString(), Series);
+        SeriesGame game2 = new(SnowflakeService.Generate().ToString(), Series);
         game2.SetScore(winnerId, 1);
         game2.Finish();
 
@@ -115,21 +115,21 @@ public class SeriesTest
         Assert.AreEqual(0, Series.Score[team1Id], "Team 1 score should be 0");
         Assert.AreEqual(0, Series.Score[team2Id], "Team 2 score should be 0");
 
-        Game game1 = new(SnowflakeService.Generate().ToString(), Series);
+        SeriesGame game1 = new(SnowflakeService.Generate().ToString(), Series);
         game1.SetScore(team1Id, 1);
         game1.Finish();
 
         Assert.AreEqual(1, Series.Score[team1Id], "Team 1 score should be 1");
         Assert.AreEqual(0, Series.Score[team2Id], "Team 2 score should be 0");
 
-        Game game2 = new(SnowflakeService.Generate().ToString(), Series);
+        SeriesGame game2 = new(SnowflakeService.Generate().ToString(), Series);
         game2.SetScore(team2Id, 1);
         game2.Finish();
 
         Assert.AreEqual(1, Series.Score[team1Id], "Team 1 score should be 1");
         Assert.AreEqual(1, Series.Score[team2Id], "Team 2 score should be 1");
 
-        Game game3 = new(SnowflakeService.Generate().ToString(), Series);
+        SeriesGame game3 = new(SnowflakeService.Generate().ToString(), Series);
         game3.SetScore(team1Id, 1);
         game3.Finish();
 
@@ -149,9 +149,9 @@ public class SeriesTest
     public void ConstructorTest_Existing()
     {
         // Create the games history to be used when testing
-        Dictionary<string, Game> games = new();
+        Dictionary<string, SeriesGame> games = new();
 
-        Game game = new(SnowflakeService.Generate().ToString(), Series);
+        SeriesGame game = new(SnowflakeService.Generate().ToString(), Series);
         game.SetScore(Series.Teams.Keys.First(), 1);
         game.Finish();
 
@@ -170,7 +170,7 @@ public class SeriesTest
 
         Assert.ThrowsException<ArgumentException>(
             () => new Series(SnowflakeService.Generate().ToString(), Teams, 3, games, DateTime.UtcNow, null, Teams.Keys.First()),
-            "If a forfeiter ID is provided the match should have finished");
+            "If a forfeiter ID is provided the game should have finished");
 
         Assert.IsInstanceOfType(
             new Series(SnowflakeService.Generate().ToString(), Teams, 3, games, DateTime.UtcNow, null, null),
@@ -193,7 +193,7 @@ public class SeriesTest
 
         Series invalidSeries = new(SnowflakeService.Generate().ToString(), Teams, 3);
 
-        Game invalidGame = new(SnowflakeService.Generate().ToString(), invalidSeries);
+        SeriesGame invalidGame = new(SnowflakeService.Generate().ToString(), invalidSeries);
         games.Add(invalidGame.Id, invalidGame);
 
         Assert.ThrowsException<ArgumentException>(
@@ -283,19 +283,19 @@ public class SeriesTest
         string team1Id = Series.Teams.Keys.First();
         string team2Id = Series.Teams.Keys.Last();
 
-        Game game1 = new(SnowflakeService.Generate().ToString(), Series);
+        SeriesGame game1 = new(SnowflakeService.Generate().ToString(), Series);
         game1.SetScore(team1Id, 1);
         game1.Finish();
 
         Assert.IsFalse(Series.Finish(), "The series should unsuccessfully finish an incomplete series");
 
-        Game game2 = new(SnowflakeService.Generate().ToString(), Series);
+        SeriesGame game2 = new(SnowflakeService.Generate().ToString(), Series);
         game2.SetScore(team2Id, 1);
         game2.Finish();
 
         Assert.IsFalse(Series.Finish(), "The series should unsuccessfully finish an incomplete series");
 
-        Game game3 = new(SnowflakeService.Generate().ToString(), Series);
+        SeriesGame game3 = new(SnowflakeService.Generate().ToString(), Series);
         game3.SetScore(team1Id, 1);
         game3.Finish();
 
@@ -311,7 +311,7 @@ public class SeriesTest
     {
         string forfeitingTeamId = Series.Teams.Keys.First();
 
-        Game game = new(SnowflakeService.Generate().ToString(), Series);
+        SeriesGame game = new(SnowflakeService.Generate().ToString(), Series);
         game.SetScore(forfeitingTeamId, 1);
         game.Finish();
 

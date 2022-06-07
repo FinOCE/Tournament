@@ -4,7 +4,7 @@ public class Series : IProgression
 {
     public string Id { get; init; }
     public Dictionary<string, ITeam> Teams { get; init; }
-    public Dictionary<string, Game> Games { get; init; }
+    public Dictionary<string, SeriesGame> Games { get; init; }
     public int BestOf { get; private set; }
     public IProgression? WinnerProgression { get; private set; }
     public IProgression? LoserProgression { get; private set; }
@@ -35,7 +35,7 @@ public class Series : IProgression
             foreach (string teamId in Teams.Keys)
                 scores.Add(teamId, 0);
 
-            foreach (Game game in Games.Values)
+            foreach (SeriesGame game in Games.Values)
                 if (game.Finished)
                     scores[game.Winner!]++;
 
@@ -63,7 +63,7 @@ public class Series : IProgression
         string id,
         Dictionary<string, ITeam> teams,
         int bestOf,
-        Dictionary<string, Game> games,
+        Dictionary<string, SeriesGame> games,
         DateTime startedTimestamp,
         DateTime? finishedTimestamp,
         string? forfeiter)
@@ -75,7 +75,7 @@ public class Series : IProgression
         if (bestOf < 1)
             throw new ArgumentException($"Invalid {nameof(bestOf)} provided");
 
-        foreach (Game game in games.Values)
+        foreach (SeriesGame game in games.Values)
             if (!teams.Keys.All(id => game.Score.ContainsKey(id)))
                 throw new ArgumentException($"Invalid {nameof(teams)} or {nameof(games)} provided");
 
@@ -187,7 +187,7 @@ public class Series : IProgression
     }
 
     /// <summary>
-    /// Set where the winner of the match should progress to
+    /// Set where the winner of the game should progress to
     /// </summary>
     public void SetWinnerProgression(IProgression? progression)
     {
@@ -195,7 +195,7 @@ public class Series : IProgression
     }
 
     /// <summary>
-    /// Set where the loser of the match should progress to
+    /// Set where the loser of the game should progress to
     /// </summary>
     public void SetLoserProgression(IProgression? progression)
     {

@@ -1,11 +1,11 @@
-﻿namespace API.Tests.Unit.Models;
+﻿namespace API.Tests.Unit.Models.Events;
 
 [TestClass]
-public class GameTest
+public class SeriesGameTest
 {
     public SnowflakeService SnowflakeService = null!;
     public Series Series = null!;
-    public Game Game = null!;
+    public SeriesGame Game = null!;
 
     [TestInitialize]
     public void TestInitialize()
@@ -45,13 +45,13 @@ public class GameTest
     [TestMethod]
     public void ConstructorTest_New()
     {
-        Assert.ThrowsException<ArgumentException>(() => new Game("", Series), "The constructor should not accept an invalid snowflake");
-        
-        Game game2 = new(SnowflakeService.Generate().ToString(), Series); // game1 is added in the TestInitialize
-        Assert.IsInstanceOfType(game2, typeof(Game), "The constructor should create a valid game");
+        Assert.ThrowsException<ArgumentException>(() => new SeriesGame("", Series), "The constructor should not accept an invalid snowflake");
+
+        SeriesGame game2 = new(SnowflakeService.Generate().ToString(), Series); // game1 is added in the TestInitialize
+        Assert.IsInstanceOfType(game2, typeof(SeriesGame), "The constructor should create a valid game");
         Assert.AreEqual("Game 2", game2.Name, "The game name should be \"Game 2\"");
 
-        Game game3 = new(SnowflakeService.Generate().ToString(), Series);
+        SeriesGame game3 = new(SnowflakeService.Generate().ToString(), Series);
         Assert.AreEqual("Game 3", game3.Name, "The game name should be \"Game 3\"");
     }
 
@@ -65,21 +65,21 @@ public class GameTest
         validScore.Add(Series.Teams.Keys.First(), 1);
         validScore.Add(Series.Teams.Keys.Last(), 0);
 
-        Assert.ThrowsException<ArgumentException>(() => new Game("", Series, validScore), "The constructor should not accept an invalid snowflake");
-        Assert.ThrowsException<ArgumentException>(() => new Game(id, Series, invalidScore), "The constructor should not accept an empty score");
+        Assert.ThrowsException<ArgumentException>(() => new SeriesGame("", Series, validScore), "The constructor should not accept an invalid snowflake");
+        Assert.ThrowsException<ArgumentException>(() => new SeriesGame(id, Series, invalidScore), "The constructor should not accept an empty score");
 
         invalidScore.Add(Series.Teams.First().Key, 1);
-        Assert.ThrowsException<ArgumentException>(() => new Game(id, Series, invalidScore), "The constructor should not accept a partial score");
+        Assert.ThrowsException<ArgumentException>(() => new SeriesGame(id, Series, invalidScore), "The constructor should not accept a partial score");
 
         invalidScore.Add("First", 2);
         invalidScore.Add("Second", 1);
-        Assert.ThrowsException<ArgumentException>(() => new Game(id, Series, invalidScore), "The constructor should not accept an invalid score");
+        Assert.ThrowsException<ArgumentException>(() => new SeriesGame(id, Series, invalidScore), "The constructor should not accept an invalid score");
 
-        Game game2 = new(SnowflakeService.Generate().ToString(), Series, validScore); // game1 is added in the TestInitialize
-        Assert.IsInstanceOfType(game2, typeof(Game), "The constructor should create a valid game");
+        SeriesGame game2 = new(SnowflakeService.Generate().ToString(), Series, validScore); // game1 is added in the TestInitialize
+        Assert.IsInstanceOfType(game2, typeof(SeriesGame), "The constructor should create a valid game");
         Assert.AreEqual("Game 2", game2.Name, "The game name should be \"Game 2\"");
 
-        Game game3 = new(SnowflakeService.Generate().ToString(), Series, validScore);
+        SeriesGame game3 = new(SnowflakeService.Generate().ToString(), Series, validScore);
         Assert.AreEqual("Game 3", game3.Name, "The game name should be \"Game 3\"");
     }
 

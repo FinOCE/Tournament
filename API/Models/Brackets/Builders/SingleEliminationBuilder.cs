@@ -33,7 +33,7 @@ public class SingleEliminationBuilder : BracketBuilder
                     if (higherRoundContainsIndex[--j])
                         break;
 
-                // Remove opponent from their current match
+                // Remove opponent from their current game
                 IStructure head = root.FindStructureWithTeam(teams[j].Id)!;
                 head.Series.RemoveTeam(teams[j].Id);
 

@@ -125,7 +125,7 @@ public class StructureTest
         structure3.Series.AddTeam(team2);
 
         structure3.Series.Start();
-        Game game = new(SnowflakeService.Generate().ToString(), structure3.Series);
+        SeriesGame game = new(SnowflakeService.Generate().ToString(), structure3.Series);
         game.SetScore(team1.Id, 1);
         game.Finish();
         structure3.Series.Finish();

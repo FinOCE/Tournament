@@ -1,6 +1,6 @@
-﻿namespace API.Models;
+﻿namespace API.Models.Events;
 
-public class Game
+public class SeriesGame
 {
     public string Id { get; init; }
     public string Name { get; init; }
@@ -18,7 +18,7 @@ public class Game
         }
     }
 
-    public Game(string id, Series series)
+    public SeriesGame(string id, Series series)
     {
         // Validate arguments
         if (!Snowflake.Validate(id))
@@ -35,7 +35,7 @@ public class Game
         Series.Games.Add(Id, this);
     }
 
-    public Game(string id, Series series, Dictionary<string, int> score)
+    public SeriesGame(string id, Series series, Dictionary<string, int> score)
     {
         // Validate arguments
         if (!Snowflake.Validate(id))

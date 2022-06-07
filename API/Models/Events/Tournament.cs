@@ -15,9 +15,11 @@ public class Tournament
     public Dictionary<string, Coordinator> Coordinators { get; init; }
     public string Icon { get; private set; }
     public string Banner { get; private set; }
-    // TODO: Include property for the game (new class)
+    public Game? Game { get; private set; }
+    public Dictionary<string, Social> Socials { get; init; }
+    public bool Verified { get; private set; }
     // TODO: Include a dictionary of events (new class)
-    // TODO: Include links to socials (new class)
+    // TODO: Include a section for prizes
 
     /// <exception cref="ArgumentException"></exception>
     public Tournament(
@@ -27,7 +29,10 @@ public class Tournament
         string? rules = null,
         Dictionary<string, Coordinator>? coordinators = null,
         string? icon = DefaultIcon,
-        string? banner = DefaultBanner)
+        string? banner = DefaultBanner,
+        Game? game = null,
+        Dictionary<string, Social>? socials = null,
+        bool verified = false)
     {
         // Validate arguments
         if (!SetName(name))
@@ -53,6 +58,9 @@ public class Tournament
         Icon = icon ?? DefaultIcon;
         Banner = banner ?? DefaultBanner;
         Coordinators = coordinators ?? new();
+        Game = game;
+        Socials = socials ?? new();
+        Verified = verified;
     }
 
     /// <summary>
@@ -125,5 +133,37 @@ public class Tournament
             .SetInvalidRegex(new(@"[^\w]"))
             .OnSuccess(banner => Banner = banner ?? DefaultBanner)
             .Test(banner);
+    }
+
+    /// <summary>
+    /// Add a social link to the tournament
+    /// </summary>
+    public bool AddSocial(Social social)
+    {
+        if (Socials.ContainsKey(social.Id))
+            return false;
+
+        Socials.Add(social.Id, social);
+        return true;
+    }
+
+    /// <summary>
+    /// Remove a social link from the tournament
+    /// </summary>
+    public bool RemoveSocial(string id)
+    {
+        if (!Socials.ContainsKey(id))
+            return false;
+
+        Socials.Remove(id);
+        return true;
+    }
+
+    /// <summary>
+    /// Mark the tournament as verified
+    /// </summary>
+    public void Verify()
+    {
+        Verified = true;
     }
 }
