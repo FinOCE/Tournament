@@ -10,7 +10,7 @@ public class SingleElminationBuilderTest
     public void TestInitialize()
     {
         SnowflakeService = new();
-        Builder = new(SnowflakeService);
+        Builder = new(SnowflakeService.Generate().ToString(), SnowflakeService);
     }
 
     /// <summary>

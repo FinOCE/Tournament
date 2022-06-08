@@ -1,5 +1,8 @@
-﻿namespace API.Models.Attributes;
+﻿namespace API.Models.Fragments;
 
+/// <summary>
+/// A compositional fragment for models that are social
+/// </summary>
 public class Sociable : ISociable
 {
     public Dictionary<string, Social> Socials { get; private set; } = new();

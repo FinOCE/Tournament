@@ -3,13 +3,14 @@
 /// <summary>
 /// A tournament that can include events
 /// </summary>
-public class Tournament : ISociable, IVerifiable
+public class Tournament : ISociable, IVerifiable, IRewardable
 {
     public const string DefaultIcon = "1234567890123456"; // TODO: Create default icon path
     public const string DefaultBanner = "1234567890123456"; // TODO: Create default banner path
 
     private ISociable _Sociable = new Sociable();
     private IVerifiable _Verifiable = new Verifiable();
+    private IRewardable _Rewardable = new Rewardable();
 
     public string Id { get; init; }
     public string Name { get; private set; }
@@ -19,10 +20,10 @@ public class Tournament : ISociable, IVerifiable
     public string Icon { get; private set; }
     public string Banner { get; private set; }
     public Game? Game { get; private set; }
-    public Dictionary<string, Prize> Prizes { get; init; }
-    // TODO: Include a dictionary of events (new class)
+    public Dictionary<string, Event> Events { get; init; }
     public Dictionary<string, Social> Socials { get { return _Sociable.Socials; } }
     public bool Verified { get { return _Verifiable.Verified; } }
+    public Dictionary<string, Prize> Prizes { get { return _Rewardable.Prizes; } }
 
     /// <exception cref="ArgumentException"></exception>
     public Tournament(
@@ -35,6 +36,7 @@ public class Tournament : ISociable, IVerifiable
         string? banner = DefaultBanner,
         Game? game = null,
         Dictionary<string, Prize>? prizes = null,
+        Dictionary<string, Event>? events = null,
         Dictionary<string, Social>? socials = null,
         bool verified = false)
     {
@@ -66,13 +68,16 @@ public class Tournament : ISociable, IVerifiable
         Banner = banner ?? DefaultBanner;
         Coordinators = coordinators ?? new();
         Game = game;
-        Prizes = prizes ?? new();
+        Events = events ?? new();
 
         if (socials is not null)
             SetSocials(socials);
 
         if (verified)
             Verify();
+
+        if (prizes is not null)
+            SetPrizes(prizes);
     }
 
     /// <summary>
@@ -185,30 +190,30 @@ public class Tournament : ISociable, IVerifiable
     }
 
     /// <summary>
-    /// Add a prize to the tournament
+    /// Add an event to the tournament
     /// </summary>
-    /// <param name="prize">The prize to be added</param>
-    /// <returns>Whether or not the prize was successfully added</returns>
-    public bool AddPrize(Prize prize)
+    /// <param name="ev">The event to be added</param>
+    /// <returns>Whether or not the event was successfully added</returns>
+    public bool AddEvent(Event ev)
     {
-        if (Prizes.ContainsKey(prize.Id))
+        if (Events.ContainsKey(ev.Id))
             return false;
 
-        Prizes.Add(prize.Id, prize);
+        Events.Add(ev.Id, ev);
         return true;
     }
 
     /// <summary>
-    /// Removes a prize from the tournament
+    /// Remove an event from the tournament
     /// </summary>
-    /// <param name="id">The ID of the prize to be removed</param>
-    /// <returns>Whether or not the prize was successfully removed</returns>
-    public bool RemovePrize(string id)
+    /// <param name="id">The ID of the event to be removed</param>
+    /// <returns>Whether or not the event was successfully removed</returns>
+    public bool RemoveEvent(string id)
     {
-        if (!Prizes.ContainsKey(id))
+        if (!Events.ContainsKey(id))
             return false;
 
-        Prizes.Remove(id);
+        Events.Remove(id);
         return true;
     }
 
@@ -230,5 +235,20 @@ public class Tournament : ISociable, IVerifiable
     public void Verify()
     {
         _Verifiable.Verify();
+    }
+
+    public void SetPrizes(Dictionary<string, Prize> prizes)
+    {
+        _Rewardable.SetPrizes(prizes);
+    }
+
+    public bool AddPrize(Prize prize)
+    {
+        return _Rewardable.AddPrize(prize);
+    }
+
+    public bool RemovePrize(string id)
+    {
+        return _Rewardable.RemovePrize(id);
     }
 }

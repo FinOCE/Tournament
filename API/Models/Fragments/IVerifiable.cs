@@ -1,4 +1,4 @@
-﻿namespace API.Models.Attributes;
+﻿namespace API.Models.Fragments;
 
 public interface IVerifiable
 {

@@ -2,7 +2,18 @@
 
 public class SingleEliminationBuilder : BracketBuilder
 {
-    public SingleEliminationBuilder(SnowflakeService snowflakeService) : base(snowflakeService) { }
+    public SingleEliminationBuilder(
+        string id,
+        SnowflakeService snowflakeService,
+        Dictionary<string, ITeam>? teams = null,
+        Dictionary<string, int>? seeds = null,
+        int bestOf = 1)
+    : base(
+        id,
+        snowflakeService,
+        teams,
+        seeds,
+        bestOf) { }
 
     public override IStructure Generate() 
     {

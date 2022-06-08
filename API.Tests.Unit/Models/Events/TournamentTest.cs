@@ -327,4 +327,16 @@ public class TournamentTest
         Assert.IsFalse(duplicateRemoveWorked, "Duplicate removals should not be successful");
         Assert.AreEqual(0, countAfterRemoving, "There should be no prizes at the end");
     }
+
+    [TestMethod]
+    [Ignore]
+    public void AddEventTest()
+    {
+    }
+
+    [TestMethod]
+    [Ignore]
+    public void RemoveEventTest()
+    {
+    }
 }

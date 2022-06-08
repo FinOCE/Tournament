@@ -1,4 +1,4 @@
-﻿namespace API.Tests.Unit.Models.Attributes;
+﻿namespace API.Tests.Unit.Models.Fragments;
 
 [TestClass]
 public class SociableTest

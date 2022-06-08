@@ -5,14 +5,32 @@
 /// </summary>
 public abstract class BracketBuilder : IBracketBuilder
 {
+    public string Id { get; init; }
     protected SnowflakeService SnowflakeService { get; init; }
-    public Dictionary<string, ITeam> Teams { get; init; } = new();
-    public Dictionary<string, int> Seeds { get; init; } = new();
-    public int BestOf { get; private set; } = 1;
+    public Dictionary<string, ITeam> Teams { get; init; }
+    public Dictionary<string, int> Seeds { get; init; }
+    public int BestOf { get; private set; }
+    // TODO: Handle progression between brackets
 
-    public BracketBuilder(SnowflakeService snowflakeService)
+    /// <exception cref="ArgumentException"></exception>
+    public BracketBuilder(
+        string id,
+        SnowflakeService snowflakeService,
+        Dictionary<string, ITeam>? teams = null,
+        Dictionary<string, int>? seeds = null,
+        int bestOf = 1)
     {
+        // Validate
+        if (!Snowflake.Validate(id))
+            throw new ArgumentException($"Invalid {nameof(id)} provided");
+
+        // Instantiate
+        Id = id;
         SnowflakeService = snowflakeService;
+        Teams = teams ?? new();
+        Seeds = seeds ?? new();
+        BestOf = bestOf;
+
     }
 
     public virtual bool AddTeam(ITeam team, int seed = 0)

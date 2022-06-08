@@ -2,6 +2,7 @@
 
 public interface IBracketBuilder
 {
+    public string Id { get; }
     Dictionary<string, ITeam> Teams { get; }
     Dictionary<string, int> Seeds { get; }
 

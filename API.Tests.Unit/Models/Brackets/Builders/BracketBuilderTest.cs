@@ -8,7 +8,7 @@ public class BracketBuilderTest
     /// </summary>
     public class NonAbstractBuilder : BracketBuilder
     {
-        public NonAbstractBuilder(SnowflakeService snowflakeService) : base(snowflakeService) { }
+        public NonAbstractBuilder(string id, SnowflakeService snowflakeService) : base(id, snowflakeService) { }
         
         /// <summary>
         /// A non-abstract override to fulfil the requirements for the superclass (unused)
@@ -26,7 +26,13 @@ public class BracketBuilderTest
     public void TestInitialize()
     {
         SnowflakeService = new();
-        Builder = new NonAbstractBuilder(SnowflakeService);
+        Builder = new NonAbstractBuilder(SnowflakeService.Generate().ToString(), SnowflakeService);
+    }
+
+    [TestMethod]
+    [Ignore]
+    public void ConstructorTest()
+    {
     }
 
     [TestMethod]

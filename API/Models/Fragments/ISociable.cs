@@ -1,4 +1,4 @@
-﻿namespace API.Models.Attributes;
+﻿namespace API.Models.Fragments;
 
 public interface ISociable
 {
@@ -8,6 +8,7 @@ public interface ISociable
     /// Set the social links on the model
     /// </summary>
     /// <param name="socials">The social links to set on the model</param>
+    /// <exception cref="ArgumentException"></exception>
     void SetSocials(Dictionary<string, Social> socials);
 
     /// <summary>
