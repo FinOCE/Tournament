@@ -30,9 +30,15 @@ public class BracketBuilderTest
     }
 
     [TestMethod]
-    [Ignore]
     public void ConstructorTest()
     {
+        // Act
+        NonAbstractBuilder invalidId() => new("", SnowflakeService);
+        NonAbstractBuilder valid() => new(SnowflakeService.Generate().ToString(), SnowflakeService);
+
+        // Assert
+        Assert.ThrowsException<ArgumentException>(invalidId, "An invalid ID should thow an exception");
+        Assert.IsInstanceOfType(valid(), typeof(NonAbstractBuilder), "A valid constructor should work");
     }
 
     [TestMethod]
