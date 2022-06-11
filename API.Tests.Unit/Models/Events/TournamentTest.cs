@@ -329,14 +329,71 @@ public class TournamentTest
     }
 
     [TestMethod]
-    [Ignore]
     public void AddEventTest()
     {
+        // Arrange
+        Event[] events = new Event[3];
+        for (int i = 0; i < events.Length; i++)
+        {
+            Event ev = new(SnowflakeService.Generate().ToString(), "Event", Tournament, DateTime.UtcNow);
+            events[i] = ev;
+        }
+
+        // Act
+        int eventsBefore = Tournament.Events.Count;
+
+        bool anyValidFail = false;
+        foreach (Event ev in events)
+        {
+            bool success = Tournament.AddEvent(ev);
+
+            if (!success)
+                anyValidFail = true;
+        }
+
+        bool duplicateWorked = Tournament.AddEvent(events[0]);
+
+        int eventsAfter = Tournament.Events.Count;
+
+        // Assert
+        Assert.AreEqual(0, eventsBefore, "The tournament should instantiate with no events");
+        Assert.IsFalse(anyValidFail, "No valid events should fail");
+        Assert.IsFalse(duplicateWorked, "Duplicate events should not be accepted");
+        Assert.AreEqual(3, eventsAfter, "There should be 3 events at the end");
     }
 
     [TestMethod]
-    [Ignore]
     public void RemoveEventTest()
     {
+        // Arrange
+        Event[] events = new Event[3];
+        for (int i = 0; i < 3; i++)
+        {
+            Event ev = new(SnowflakeService.Generate().ToString(), "Event", Tournament, DateTime.UtcNow);
+            events[i] = ev;
+            Tournament.AddEvent(ev);
+        }
+
+        // Act
+        int eventsBefore = Tournament.Events.Count;
+
+        bool anyValidFail = false;
+        foreach (Event ev in events)
+        {
+            bool success = Tournament.RemoveEvent(ev.Id);
+
+            if (!success)
+                anyValidFail = true;
+        }
+
+        bool duplicateWorked = Tournament.RemoveEvent(events[0].Id);
+
+        int eventsAfter = Tournament.Events.Count;
+
+        // Assert
+        Assert.AreEqual(3, eventsBefore, "The tournament should start with 3 events");
+        Assert.IsFalse(anyValidFail, "No valid removals should fail");
+        Assert.IsFalse(duplicateWorked, "Invalid IDs should not be accepted");
+        Assert.AreEqual(0, eventsAfter, "There should be no events left at the end");
     }
 }
