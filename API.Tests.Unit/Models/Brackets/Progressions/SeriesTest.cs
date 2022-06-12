@@ -76,6 +76,27 @@ public class SeriesTest
     }
 
     [TestMethod]
+    public void ByedTest()
+    {
+        // Arrange
+        Team team = new(SnowflakeService.Generate().ToString(), "Team");
+        Dictionary<string, ITeam> teams = new();
+        teams.Add(team.Id, team);
+        Series series = new(SnowflakeService.Generate().ToString(), teams, 1);
+
+        // Act
+        bool finishedBefore = series.Finished;
+
+        series.Bye();
+
+        bool finishedAfter = series.Finished;
+
+        // Assert
+        Assert.IsFalse(finishedBefore, "The series should not be finished initially");
+        Assert.IsTrue(finishedAfter, "The series should be marked as finished");
+    }
+
+    [TestMethod]
     public void WinnerTest_Win()
     {
         Assert.IsNull(Series.Winner, "There should not be a winner yet");
@@ -319,6 +340,32 @@ public class SeriesTest
         Assert.IsTrue(Series.Forfeit(forfeitingTeamId), "The team should be able to forfeit");
         Assert.IsTrue(Series.Forfeited && Series.Finished, "The game should be marked as forfeited and completed");
         Assert.IsFalse(Series.Forfeit(forfeitingTeamId), "A game should not be able to be forfeited multiple times");
+    }
+
+    [TestMethod]
+    public void ByeTest()
+    {
+        // Arrange
+        Team team = new(SnowflakeService.Generate().ToString(), "Team");
+        Dictionary<string, ITeam> teams = new();
+        teams.Add(team.Id, team);
+        Series series = new(SnowflakeService.Generate().ToString(), teams, 1);
+
+        // Act
+        bool finishedBefore = series.Finished;
+
+        bool success = series.Bye();
+        bool duplicateWorked = series.Bye();
+
+        bool byed = series.Byed;
+        bool finishedAfter = series.Finished;
+
+        // Assert
+        Assert.IsFalse(finishedBefore, "The series should not be finished initially");
+        Assert.IsTrue(success, "Bying the series should work");
+        Assert.IsFalse(duplicateWorked, "Duplicate calls should not work");
+        Assert.IsTrue(byed, "The series should be saved as byed");
+        Assert.IsTrue(finishedAfter, "The series should be marked as finished");
     }
 
     [TestMethod]

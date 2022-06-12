@@ -14,6 +14,7 @@ public class Series : IProgression
     public bool Finished { get { return FinishedTimestamp != null; } }
     public string? Forfeiter { get; private set; }
     public bool Forfeited { get { return Forfeiter != null; } }
+    public bool Byed = false;
     public string? Winner
     {
         get
@@ -155,7 +156,12 @@ public class Series : IProgression
             return false;
 
         Dictionary<string, int> score = Score;
-        if (!Forfeited && score.Values.ElementAt(0) < (BestOf + 1) / 2 && score.Values.ElementAt(1) < (BestOf + 1) / 2)
+        if (!Forfeited &&
+            !Byed &&
+            score.Values.Count == 2 &&
+            score.Values.ElementAt(0) < (BestOf + 1) / 2 &&
+            score.Values.ElementAt(1) < (BestOf + 1) / 2
+        )
             return false;
 
         FinishedTimestamp = DateTime.UtcNow;
@@ -163,7 +169,7 @@ public class Series : IProgression
         if (WinnerProgression != null)
             WinnerProgression.AddTeam(Teams[Winner!]);
 
-        if (LoserProgression != null)
+        if (LoserProgression != null && Teams.Count == 2)
             LoserProgression.AddTeam(Teams.First(team => team.Key != Winner).Value);
 
         return true;
@@ -172,7 +178,6 @@ public class Series : IProgression
     /// <summary>
     /// Make a team forfeit the series
     /// </summary>
-    /// <exception cref="ArgumentException"></exception>
     public bool Forfeit(string id)
     {
         if (!Teams.ContainsKey(id))
@@ -182,6 +187,23 @@ public class Series : IProgression
             return false;
 
         Forfeiter = id;
+        Finish();
+        return true;
+    }
+
+    /// <summary>
+    /// Progress the series if only one team can be in it
+    /// </summary>
+    /// <returns>Whether or not the series was able to be progressed</returns>
+    public bool Bye()
+    {
+        if (Finished)
+            return false;
+
+        if (Teams.Count != 1)
+            return false;
+
+        Byed = true;
         Finish();
         return true;
     }
