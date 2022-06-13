@@ -67,7 +67,12 @@ public class SingleEliminationBuilder : BracketBuilder
             }
         }
 
+        // Automatically finish bracket where there is only one team
+        if (Teams.Count == 1)
+            root.Series.Bye();
+
         // Return the root of the bracket tree
-        return root;
+        Bracket = root;
+        return Bracket;
     }
 }

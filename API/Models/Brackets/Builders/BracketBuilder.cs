@@ -9,7 +9,8 @@ public abstract class BracketBuilder : IBracketBuilder
     protected SnowflakeService SnowflakeService { get; init; }
     public Dictionary<string, ITeam> Teams { get; init; }
     public Dictionary<string, int> Seeds { get; init; }
-    public int BestOf { get; private set; }
+    public int BestOf { get; protected set; }
+    public IStructure? Bracket { get; protected set; }
     // TODO: Handle progression between brackets
 
     /// <exception cref="ArgumentException"></exception>

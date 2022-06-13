@@ -15,8 +15,8 @@ public class Event : IRewardable
     public Tournament Tournament { get; init; }
     public Dictionary<string, IBracketBuilder> Brackets { get; init; }
     public bool BracketsVisible { get; private set; }
-    public DateTime? StartTimestamp { get; private set; }
-    public DateTime? RegistrationTimestamp { get; private set; }
+    public DateTime StartTimestamp { get; private set; }
+    public DateTime RegistrationTimestamp { get; private set; }
     public DateTime? FinishedTimestamp { get; private set; }
     public bool Finished { get { return FinishedTimestamp is not null; } }
     public string Icon { get; private set; }
@@ -49,6 +49,8 @@ public class Event : IRewardable
 
         if (finishedTimestamp is not null && finishedTimestamp < startTimestamp)
             throw new ArgumentException($"The event cannot finish before the start time");
+
+        // TODO: Validate that all brackets are finished if the finishedTimestamp exists
 
         // Instantiate
         Id = id;
@@ -85,24 +87,40 @@ public class Event : IRewardable
     /// Set the timestamp to start the event
     /// </summary>
     /// <param name="timestamp">The new start time</param>
-    public void SetStartTimestamp(DateTime timestamp)
+    /// <returns>Whether or not the timestamp was successfully updated</returns>
+    public bool SetStartTimestamp(DateTime timestamp)
     {
+        if (timestamp < DateTime.UtcNow)
+            return false;
+
+        if (StartTimestamp < DateTime.UtcNow)
+            return false;
+
         if (RegistrationTimestamp > timestamp)
             RegistrationTimestamp = timestamp;
 
         StartTimestamp = timestamp;
+        return true;
     }
 
     /// <summary>
     /// Set the timestamp for registration to close
     /// </summary>
     /// <param name="timestamp">The new registration close time</param>
-    public void SetRegistrationTimestamp(DateTime timestamp)
+    /// <returns>Whether or not the timestamp was successfully updated</returns>
+    public bool SetRegistrationTimestamp(DateTime timestamp)
     {
+        if (timestamp < DateTime.UtcNow)
+            return false;
+
+        if (StartTimestamp < DateTime.UtcNow)
+            return false;
+
         if (StartTimestamp < timestamp)
             StartTimestamp = timestamp;
 
         RegistrationTimestamp = timestamp;
+        return true;
     }
 
     /// <summary>
@@ -165,6 +183,21 @@ public class Event : IRewardable
             .SetInvalidRegex(new(@"[^\w]"))
             .OnSuccess(banner => Banner = banner ?? DefaultBanner)
             .Test(banner);
+    }
+
+    /// <summary>
+    /// Finish the event
+    /// </summary>
+    /// <returns>Whether or not the event was successfully finished</returns>
+    public bool Finish()
+    {
+        if (Finished)
+            return false;
+
+        // TODO: Validate the event finishing based on the brackets
+
+        FinishedTimestamp = DateTime.UtcNow;
+        return true;
     }
 
     public void SetPrizes(Dictionary<string, Prize> prizes)
