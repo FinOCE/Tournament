@@ -13,6 +13,8 @@ public abstract class BracketBuilder : IBracketBuilder, IProgression
     public Dictionary<string, int> Seeds { get; init; }
     public int BestOf { get; protected set; }
     public IStructure? Bracket { get; protected set; }
+    public bool Private { get; private set; }
+    public Dictionary<string, BracketInvite> Invites { get; init; }
 
     /// <exception cref="ArgumentException"></exception>
     public BracketBuilder(
@@ -20,7 +22,9 @@ public abstract class BracketBuilder : IBracketBuilder, IProgression
         SnowflakeService snowflakeService,
         Dictionary<string, ITeam>? teams = null,
         Dictionary<string, int>? seeds = null,
-        int bestOf = 1)
+        int bestOf = 1,
+        bool priv = false,
+        Dictionary<string, BracketInvite>? invites = null)
     {
         // Validate
         if (!Snowflake.Validate(id))
@@ -32,7 +36,8 @@ public abstract class BracketBuilder : IBracketBuilder, IProgression
         Teams = teams ?? new();
         Seeds = seeds ?? new();
         BestOf = bestOf;
-
+        Private = priv;
+        Invites = invites ?? new();
     }
 
     public virtual bool AddTeam(ITeam team)
@@ -42,6 +47,9 @@ public abstract class BracketBuilder : IBracketBuilder, IProgression
 
     public virtual bool AddTeam(ITeam team, int seed = DefaultSeed)
     {
+        if (Private && !Invites.Values.Any(i => i.Team.Id == team.Id))
+            return false;
+
         if (Teams.ContainsKey(team.Id))
             return false;
 
@@ -87,5 +95,28 @@ public abstract class BracketBuilder : IBracketBuilder, IProgression
             .Reverse()
             .Select(kvp => kvp.Value)
             .ToArray();
+    }
+
+    public virtual void Privatize(bool priv = true)
+    {
+        Private = priv;
+    }
+
+    public virtual bool AddInvite(BracketInvite invite)
+    {
+        if (Invites.ContainsKey(invite.Id))
+            return false;
+
+        Invites.Add(invite.Id, invite);
+        return true;
+    }
+
+    public virtual bool RemoveInvite(string id)
+    {
+        if (!Invites.ContainsKey(id))
+            return false;
+
+        Invites.Remove(id);
+        return true;
     }
 }
