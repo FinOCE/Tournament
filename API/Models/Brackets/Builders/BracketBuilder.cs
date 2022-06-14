@@ -3,15 +3,16 @@
 /// <summary>
 /// A builder to generate a bracket
 /// </summary>
-public abstract class BracketBuilder : IBracketBuilder
+public abstract class BracketBuilder : IBracketBuilder, IProgression
 {
+    public const int DefaultSeed = 0;
+
     public string Id { get; init; }
     protected SnowflakeService SnowflakeService { get; init; }
     public Dictionary<string, ITeam> Teams { get; init; }
     public Dictionary<string, int> Seeds { get; init; }
     public int BestOf { get; protected set; }
     public IStructure? Bracket { get; protected set; }
-    // TODO: Handle progression between brackets
 
     /// <exception cref="ArgumentException"></exception>
     public BracketBuilder(
@@ -34,7 +35,12 @@ public abstract class BracketBuilder : IBracketBuilder
 
     }
 
-    public virtual bool AddTeam(ITeam team, int seed = 0)
+    public virtual bool AddTeam(ITeam team)
+    {
+        return AddTeam(team, DefaultSeed);
+    }
+
+    public virtual bool AddTeam(ITeam team, int seed = DefaultSeed)
     {
         if (Teams.ContainsKey(team.Id))
             return false;
@@ -54,7 +60,7 @@ public abstract class BracketBuilder : IBracketBuilder
         return true;
     }
     
-    public virtual bool SetSeed(string id, int seed = 0)
+    public virtual bool SetSeed(string id, int seed = DefaultSeed)
     {
         if (!Teams.ContainsKey(id))
             return false;
