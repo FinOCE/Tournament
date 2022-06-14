@@ -87,15 +87,20 @@ public class EventTest
             DateTime.UtcNow,
             brackets: brackets,
             finishedTimestamp: DateTime.UtcNow.AddMinutes(-10));
+        Event noBrackets() => new(
+            sg(),
+            "Event",
+            Tournament,
+            DateTime.UtcNow,
+            finishedTimestamp: DateTime.UtcNow.AddMinutes(1));
         Event valid() => new(sg(), "Event", Tournament, DateTime.UtcNow);
-
-        // TODO: Add test where finishedTimestamp is valid but no completed bracket is provided
 
         // Assert
         Assert.ThrowsException<ArgumentException>(invalidId, "An invalid ID should not work");
         Assert.ThrowsException<ArgumentException>(invalidName, "An invalid name should not work");
         Assert.ThrowsException<ArgumentException>(invalidRegTime, "An invalid registration time should not work");
         Assert.ThrowsException<ArgumentException>(invalidFinishTime, "An invalid finish time should not work");
+        Assert.ThrowsException<ArgumentException>(noBrackets, "Having a finish time without brackets should not work");
         Assert.IsInstanceOfType(valid(), typeof(Event), "A valid constructor should work");
     }
 

@@ -50,7 +50,13 @@ public class Event : IRewardable
         if (finishedTimestamp is not null && finishedTimestamp < startTimestamp)
             throw new ArgumentException($"The event cannot finish before the start time");
 
-        // TODO: Validate that all brackets are finished if the finishedTimestamp exists
+        if (finishedTimestamp is not null && brackets is null)
+            throw new ArgumentException("An event cannot be finished without any brackets");
+
+        if (finishedTimestamp is not null && brackets is not null)
+            foreach (IBracketBuilder builder in brackets.Values)
+                if (builder.Bracket is null || !builder.Bracket.Series.Finished)
+                    throw new ArgumentException($"The event cannot be finished if the brackets aren't all completed");
 
         // Instantiate
         Id = id;
@@ -194,7 +200,12 @@ public class Event : IRewardable
         if (Finished)
             return false;
 
-        // TODO: Validate the event finishing based on the brackets
+        if (Brackets.Count == 0)
+            return false;
+
+        foreach (IBracketBuilder builder in Brackets.Values)
+            if (builder.Bracket is null || !builder.Bracket.Series.Finished)
+                return false;
 
         FinishedTimestamp = DateTime.UtcNow;
         return true;
