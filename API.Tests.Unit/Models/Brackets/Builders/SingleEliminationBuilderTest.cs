@@ -60,7 +60,7 @@ public class SingleElminationBuilderTest
         Assert.AreEqual(1, root.Series.Teams.Count, "There should only be one team in the bracket");
         Assert.IsInstanceOfType(root.Series.WinnerProgression, typeof(ExactPlacement), "The winner should proceed to an ExactPlacement");
         Assert.AreEqual(1, ((ExactPlacement)root.Series.WinnerProgression!).Position, "The winner progression position should be 1");
-        Assert.AreEqual(0, root.Children, "There should be no preceeding structures");
+        Assert.AreEqual(0, root.Children.Length, "There should be no preceeding structures");
     }
 
     [TestMethod]
@@ -78,7 +78,7 @@ public class SingleElminationBuilderTest
         Assert.AreEqual(1, ((ExactPlacement)root.Series.WinnerProgression!).Position, "The winner progression position should be 1");
         Assert.IsInstanceOfType(root.Series.WinnerProgression, typeof(ExactPlacement), "The loser should proceed to an ExactPlacement");
         Assert.AreEqual(2, ((ExactPlacement)root.Series.LoserProgression!).Position, "The loser progression position should be 2");
-        Assert.AreEqual(0, root.Children, "There should be no preceeding structures");
+        Assert.AreEqual(0, root.Children.Length, "There should be no preceeding structures");
     }
 
     [TestMethod]
@@ -98,7 +98,7 @@ public class SingleElminationBuilderTest
         Assert.IsTrue(root.Right.Series.Teams.Values.Any(t => t.Name == "User 2"), "Team 2 should be in the semi-final");
         Assert.IsTrue(root.Right.Series.Teams.Values.Any(t => t.Name == "User 3"), "Team 3 should be in the semi-final");
         Assert.AreEqual(2, root.Right.Series.Teams.Count, "There should be two teams in the semi-final");
-        Assert.AreEqual(1, root.Children, "There should only be the final and single semi-final series");
+        Assert.AreEqual(1, root.Children.Length, "There should only be the final and single semi-final series");
     }
 
     [TestMethod]
@@ -120,7 +120,7 @@ public class SingleElminationBuilderTest
         Assert.IsTrue(root.Right.Series.Teams.Values.Any(t => t.Name == "Team 2"), "Team 2 should be in the right semi-final");
         Assert.IsTrue(root.Right.Series.Teams.Values.Any(t => t.Name == "Team 3"), "Team 3 should be in the right semi-final");
         Assert.AreEqual(2, root.Right.Series.Teams.Count, "There should be two teams in the right semi-final");
-        Assert.AreEqual(2, root.Children, "There should only be the final and two semi-final series");
+        Assert.AreEqual(2, root.Children.Length, "There should only be the final and two semi-final series");
     }
 
     [TestMethod]

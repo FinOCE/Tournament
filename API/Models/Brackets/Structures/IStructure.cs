@@ -6,7 +6,7 @@ public interface IStructure
     IStructure? Parent { get; }
     IStructure? Left { get; }
     IStructure? Right { get; }
-    int Children { get; }
+    IStructure[] Children { get; }
 
     /// <summary>
     /// Set where the winner progresses to

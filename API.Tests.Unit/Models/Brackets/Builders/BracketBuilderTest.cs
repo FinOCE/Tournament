@@ -6,9 +6,9 @@ public class BracketBuilderTest
     /// <summary>
     /// A non-abstract superclass of BracketBuilder to use for testing
     /// </summary>
-    public class NonAbstractBuilder : BracketBuilder
+    public class Implementation : BracketBuilder
     {
-        public NonAbstractBuilder(string id, SnowflakeService snowflakeService) : base(id, snowflakeService) { }
+        public Implementation(string id, SnowflakeService snowflakeService) : base(id, snowflakeService) { }
         
         /// <summary>
         /// A non-abstract override to fulfil the requirements for the superclass (unused)
@@ -20,25 +20,25 @@ public class BracketBuilderTest
     }
 
     SnowflakeService SnowflakeService = null!;
-    NonAbstractBuilder Builder = null!;
+    Implementation Builder = null!;
 
     [TestInitialize]
     public void TestInitialize()
     {
         SnowflakeService = new();
-        Builder = new NonAbstractBuilder(SnowflakeService.Generate().ToString(), SnowflakeService);
+        Builder = new Implementation(SnowflakeService.Generate().ToString(), SnowflakeService);
     }
 
     [TestMethod]
     public void ConstructorTest()
     {
         // Act
-        NonAbstractBuilder invalidId() => new("", SnowflakeService);
-        NonAbstractBuilder valid() => new(SnowflakeService.Generate().ToString(), SnowflakeService);
+        Implementation invalidId() => new("", SnowflakeService);
+        Implementation valid() => new(SnowflakeService.Generate().ToString(), SnowflakeService);
 
         // Assert
         Assert.ThrowsException<ArgumentException>(invalidId, "An invalid ID should thow an exception");
-        Assert.IsInstanceOfType(valid(), typeof(NonAbstractBuilder), "A valid constructor should work");
+        Assert.IsInstanceOfType(valid(), typeof(Implementation), "A valid constructor should work");
     }
 
     [TestMethod]
@@ -153,6 +153,25 @@ public class BracketBuilderTest
         Assert.AreEqual(1, valueAfterSetTo0, "The seed should remain unchanged on invalid call");
         Assert.IsTrue(setTo5, "The seed should be successfully set to 5");
         Assert.AreEqual(5, valueAfterSetTo5, "The seed should be updated to 5");
+    }
+
+    [TestMethod]
+    public void SetBracketTest()
+    {
+        // Arrange
+        Series series = new(SnowflakeService.Generate().ToString(), new(), 1);
+        IStructure root = new Finale(series, new(1), new(2));
+
+        // Act
+        IStructure? before = Builder.Bracket;
+
+        Builder.SetBracket(root);
+
+        IStructure? after = Builder.Bracket;
+
+        // Assert
+        Assert.IsNull(before, "The bracket should initially be null");
+        Assert.IsInstanceOfType(after, typeof(IStructure), "The bracket should have been successfully set");
     }
 
     [TestMethod]

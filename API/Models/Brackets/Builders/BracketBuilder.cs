@@ -24,7 +24,8 @@ public abstract class BracketBuilder : IBracketBuilder, IProgression
         Dictionary<string, int>? seeds = null,
         int bestOf = 1,
         bool priv = false,
-        Dictionary<string, BracketInvite>? invites = null)
+        Dictionary<string, BracketInvite>? invites = null,
+        IStructure? root = null)
     {
         // Validate
         if (!Snowflake.Validate(id))
@@ -38,6 +39,7 @@ public abstract class BracketBuilder : IBracketBuilder, IProgression
         BestOf = bestOf;
         Private = priv;
         Invites = invites ?? new();
+        Bracket = root;
     }
 
     public virtual bool AddTeam(ITeam team)
@@ -87,6 +89,11 @@ public abstract class BracketBuilder : IBracketBuilder, IProgression
     }
 
     public abstract IStructure Generate();
+
+    public virtual void SetBracket(IStructure? root = null)
+    {
+        Bracket = root;
+    }
 
     public virtual ITeam[] GetOrderedTeams()
     {

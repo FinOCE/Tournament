@@ -9,22 +9,26 @@ public class Structure : IStructure
     public IStructure? Parent { get; protected set; } = null;
     public IStructure? Left { get; protected set; } = null;
     public IStructure? Right { get; protected set; } = null;
-    public int Children
+    public IStructure[] Children
     {
         get
         {
-            int children = 0;
+            IStructure[] children = Array.Empty<IStructure>();
 
             if (Left != null)
             {
-                children++;
-                children += Left.Children;
+                children = children
+                    .Append(Left)
+                    .Concat(Left.Children)
+                    .ToArray();
             }
 
             if (Right != null)
             {
-                children++;
-                children += Right.Children;
+                children = children
+                    .Append(Right)
+                    .Concat(Right.Children)
+                    .ToArray();
             }
 
             return children;

@@ -31,7 +31,7 @@ public class StructureTest
         structure1.AddChild(structure3);
 
         // Asset
-        Assert.AreEqual(3, Structure.Children, "There should be 3 structures as children");
+        Assert.AreEqual(3, Structure.Children.Length, "There should be 3 structures as children");
     }
 
     [TestMethod]

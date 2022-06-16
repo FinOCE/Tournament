@@ -6,9 +6,9 @@ public interface IBracketBuilder
     Dictionary<string, ITeam> Teams { get; }
     Dictionary<string, int> Seeds { get; }
     int BestOf { get; }
+    IStructure? Bracket { get; }
     bool Private { get; }
     Dictionary<string, BracketInvite> Invites { get; }
-    IStructure? Bracket { get; }
 
     /// <summary>
     /// Add a team to the bracket
@@ -35,6 +35,12 @@ public interface IBracketBuilder
     /// </summary>
     /// <exception cref="InvalidOperationException"></exception>
     IStructure Generate();
+
+    /// <summary>
+    /// Set the bracket to a root
+    /// </summary>
+    /// <param name="root">The root of the structure for the bracket</param>
+    void SetBracket(IStructure? root = null);
 
     /// <summary>
     /// Sort the teams by their seeding and return as an array in order of best to worst

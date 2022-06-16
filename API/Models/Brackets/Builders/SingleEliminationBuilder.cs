@@ -7,23 +7,31 @@ public class SingleEliminationBuilder : BracketBuilder
         SnowflakeService snowflakeService,
         Dictionary<string, ITeam>? teams = null,
         Dictionary<string, int>? seeds = null,
-        int bestOf = 1)
+        int bestOf = 1,
+        bool priv = false,
+        Dictionary<string, BracketInvite>? invites = null,
+        IStructure? root = null)
     : base(
         id,
         snowflakeService,
         teams,
         seeds,
-        bestOf) { }
+        bestOf,
+        priv,
+        invites,
+        root)
+    { }
 
     public override IStructure Generate() 
     {
         if (Teams.Count == 0)
             throw new InvalidOperationException("No teams are currently in the bracket builder");
 
+        // Bracket has not been generated before
         IStructure root = new Finale(new(SnowflakeService.Generate().ToString(), null, BestOf), new(1), new(2));
         ITeam[] teams = GetOrderedTeams();
         BitArray higherRoundContainsIndex = new(2);
-        
+
         for (int i = 0; i < teams.Length; i++)
         {
             // Reset round team contents when new depth is required
