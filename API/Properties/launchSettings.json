@@ -14,8 +14,10 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
         "AUTHENTICATION_SECRET": "DevelopmentAuthenticationSecret",
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "PASSWORD_HASHING_SECRET": "DevelopmentPasswordHashingSecret",
+        "DB_CONNECTION_STRING": "Server=localhost;Database=master;Trusted_Connection=True;"
       },
       "applicationUrl": "https://localhost:7239;http://localhost:5239",
       "dotnetRunMessages": true
