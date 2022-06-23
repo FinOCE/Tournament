@@ -1,14 +1,12 @@
 ﻿CREATE PROCEDURE [dbo].[tsp_CheckEmail]
-	@email VARCHAR(255)
+	@Email VARCHAR(255)
 AS
-	SET NOCOUNT ON
-
 	DECLARE @Exists BIT
 
 	IF EXISTS(
 		SELECT *
 		FROM [dbo].[User]
-		WHERE [Email] = @email
+		WHERE [Email] = @Email
 	)
 		BEGIN
 			-- Email is already in use
@@ -21,3 +19,5 @@ AS
 		END
 
 	SELECT @Exists AS 'Exists'
+
+RETURN 0

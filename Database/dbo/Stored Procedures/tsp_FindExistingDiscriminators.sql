@@ -1,6 +1,8 @@
 ﻿CREATE PROCEDURE [dbo].[tsp_FindExistingDiscriminators]
-	@param1 int = 0,
-	@param2 int
+	@Username VARCHAR(16)
 AS
-	SELECT @param1, @param2
+	SELECT [Discriminator]
+	FROM [dbo].[User]
+	WHERE [Username] = @Username
+
 RETURN 0

@@ -40,8 +40,8 @@ public class UserController : Controller
             bool exists = _DbService
                 .RunProcedure(
                     "[dbo].[tsp_CheckEmail]",
-                    new Dictionary<string, object> { { "@email", email } },
-                    reader => (int)reader["count"] != 0)
+                    new Dictionary<string, object> { { "@Email", email } },
+                    reader => (int)reader["Exists"] != 0)
                 .Any(r => !r);
 
             if (exists)
@@ -51,7 +51,7 @@ public class UserController : Controller
             int[] unavailableDiscriminators = _DbService
                 .RunProcedure(
                     "[dbo].[tsp_FindExistingDiscriminators]",
-                    new Dictionary<string, object> { { "@username", username } },
+                    new Dictionary<string, object> { { "@Username", username } },
                     reader => (int)reader["Discriminator"]);
 
             if (unavailableDiscriminators.Length == 10000)
@@ -81,11 +81,11 @@ public class UserController : Controller
                     "[dbo].[tsp_CreateUser]",
                     new Dictionary<string, object>
                     {
-                        { "@id", _SnowflakeService.Generate().ToString() },
-                        { "@email", email },
-                        { "@username", username },
-                        { "@discriminator", discriminator },
-                        { "@password", password }
+                        { "@Id", _SnowflakeService.Generate().ToString() },
+                        { "@Email", email },
+                        { "@Username", username },
+                        { "@Discriminator", discriminator },
+                        { "@Password", password }
                     },
                     reader => new User(
                         (string)reader["Id"],
