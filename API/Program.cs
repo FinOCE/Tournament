@@ -8,6 +8,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<DbService>();
 builder.Services.AddSingleton<LoggingService>();
+builder.Services.AddHttpClient<CaptchaService>();
 
 var app = builder.Build();
 
