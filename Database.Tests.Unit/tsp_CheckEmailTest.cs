@@ -10,10 +10,10 @@ using System.Text;
 namespace Database.Tests.Unit
 {
     [TestClass()]
-    public class tsp_CheckEmailTests : SqlDatabaseTestClass
+    public class tsp_CheckEmailTest : SqlDatabaseTestClass
     {
 
-        public tsp_CheckEmailTests()
+        public tsp_CheckEmailTest()
         {
             InitializeComponent();
         }
@@ -38,7 +38,7 @@ namespace Database.Tests.Unit
         private void InitializeComponent()
         {
             Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction dbo_tsp_CheckEmailTest_Available_TestAction;
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(tsp_CheckEmailTests));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(tsp_CheckEmailTest));
             Microsoft.Data.Tools.Schema.Sql.UnitTesting.Conditions.ScalarValueCondition noMatchingEmails;
             Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction testInitializeAction;
             Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction dbo_tsp_CheckEmailTest_Unavailable_TestAction;
@@ -62,7 +62,7 @@ namespace Database.Tests.Unit
             // 
             noMatchingEmails.ColumnNumber = 1;
             noMatchingEmails.Enabled = true;
-            noMatchingEmails.ExpectedValue = "0";
+            noMatchingEmails.ExpectedValue = "False";
             noMatchingEmails.Name = "noMatchingEmails";
             noMatchingEmails.NullExpected = false;
             noMatchingEmails.ResultSet = 1;
@@ -81,7 +81,7 @@ namespace Database.Tests.Unit
             // 
             emailUsed.ColumnNumber = 1;
             emailUsed.Enabled = true;
-            emailUsed.ExpectedValue = "1";
+            emailUsed.ExpectedValue = "true";
             emailUsed.Name = "emailUsed";
             emailUsed.NullExpected = false;
             emailUsed.ResultSet = 1;
@@ -103,7 +103,7 @@ namespace Database.Tests.Unit
             this.dbo_tsp_CheckEmailTest_UnavailableData.PretestAction = null;
             this.dbo_tsp_CheckEmailTest_UnavailableData.TestAction = dbo_tsp_CheckEmailTest_Unavailable_TestAction;
             // 
-            // tsp_CheckEmailTests
+            // tsp_CheckEmailTest
             // 
             this.TestCleanupAction = testCleanupAction;
             this.TestInitializeAction = testInitializeAction;

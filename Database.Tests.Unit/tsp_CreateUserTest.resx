@@ -117,59 +117,48 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="dbo_tsp_CheckEmailTest_Available_TestAction.SqlScript" xml:space="preserve">
-    <value>--DECLARE @RC AS INT, @email AS VARCHAR (255);
+  <data name="dbo_tsp_CreateUserTest_New_TestAction.SqlScript" xml:space="preserve">
+    <value>DECLARE @Id AS VARCHAR(255)
+DECLARE @Email AS VARCHAR(255)
+DECLARE @Username AS VARCHAR(16)
+DECLARE @Discriminator AS INT
+DECLARE @Password AS VARCHAR(255)
 
---SELECT @RC = 0,
-       --@email = 'unused@example.com';
+DECLARE @Table TABLE
+(
+	[Id] VARCHAR(255) NOT NULL PRIMARY KEY,
+	[Email] VARCHAR(255) NOT NULL UNIQUE,
+	[Username] VARCHAR(16) NOT NULL,
+	[Password] VARCHAR(255) NOT NULL,
+	[Discriminator] INT NOT NULL,
+	[Icon] VARCHAR(16) DEFAULT NULL,
+	[Permissions] INT NOT NULL DEFAULT 0,
+	[Verified] BIT NOT NULL DEFAULT 0
+)
 
---EXECUTE @RC = [dbo].[tsp_CheckEmail] @email;
+SET @Id = 1
+SET @Email = 'user1@example.com'
+SET @Username = 'User'
+SET @Discriminator = 1
+SET @Password = 'Password'
 
---SELECT @RC AS RC;
+INSERT @Table
+	EXEC [dbo].[tsp_CreateUser] @Id, @Email, @Username, @Discriminator, @Password
 
-SELECT [dbo].[tsp_CheckEmail] 'unused@example.com'</value>
-  </data>
-  <data name="testInitializeAction.SqlScript" xml:space="preserve">
-    <value>/*
-Add SQL statements here that you want to run before 
-each test method (unit test) in this test class is run.
+SET @Id = 2
+SET @Email = 'user2@example.com'
+SET @Username = 'User'
+SET @Discriminator = 2
+SET @Password = 'Password'
 
-In the lower pane, you can add test conditions that verify 
-whether the results of your SQL statements match what 
-you expect.
-*/
+INSERT @Table
+	EXEC [dbo].[tsp_CreateUser] @Id, @Email, @Username, @Discriminator, @Password
 
-INSERT INTO [dbo].[User]
-	([Id], [Email], [Username], [Password], [Discriminator])
-VALUES
-	(1, 'user1@example.com', 'User', 'Password', 1),
-	(2, 'user2@example.com', 'User', 'Password', 2),
-	(3, 'user3@example.com', 'User', 'Password', 3),
-	(4, 'user4@example.com', 'User', 'Password', 4)
-</value>
-  </data>
-  <data name="dbo_tsp_CheckEmailTest_Unavailable_TestAction.SqlScript" xml:space="preserve">
-    <value>DECLARE @RC AS INT, @email AS VARCHAR (255);
-
-SELECT @RC = 0,
-       @email = 'user1@example.com';
-
-EXECUTE @RC = [dbo].[tsp_CheckEmail] @email;
-
-SELECT @RC AS RC;
+SELECT * FROM @Table
 </value>
   </data>
   <data name="testCleanupAction.SqlScript" xml:space="preserve">
-    <value>/*
-Add SQL statements here that you want to run after 
-each test method (unit test) in this test class is run.
-
-In the lower pane, you can add test conditions that verify 
-whether the results of your SQL statements match what 
-you expect.
-*/
-
-DELETE FROM [dbo].[User]
+    <value>DELETE FROM [dbo].[User]
 </value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
