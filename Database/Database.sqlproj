@@ -67,5 +67,6 @@
     <Build Include="dbo\Stored Procedures\tsp_CheckEmail.sql" />
     <Build Include="dbo\Stored Procedures\tsp_FindExistingDiscriminators.sql" />
     <Build Include="dbo\Stored Procedures\tsp_CreateUser.sql" />
+    <Build Include="dbo\Stored Procedures\tsp_GetUser.sql" />
   </ItemGroup>
 </Project>

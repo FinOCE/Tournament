@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].[tsp_CreateUser]
-	@Id INT,
+	@Id VARCHAR(255),
 	@Email VARCHAR(255),
 	@Username VARCHAR(16),
 	@Discriminator INT,

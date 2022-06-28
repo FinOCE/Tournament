@@ -68,6 +68,9 @@
     <Compile Include="tsp_FindExistingDiscriminatorsTest.cs">
       <SubType>Designer</SubType>
     </Compile>
+    <Compile Include="tsp_GetUserTest.cs">
+      <SubType>Designer</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -81,6 +84,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tsp_FindExistingDiscriminatorsTest.resx">
       <DependentUpon>tsp_FindExistingDiscriminatorsTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tsp_GetUserTest.resx">
+      <DependentUpon>tsp_GetUserTest.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
