@@ -10,11 +10,15 @@ on:
 
 env:
   DOTNET_VERSION: '6.0.201'
+  ASPNETCORE_ENVIRONMENT: ${{ secrets.ASPNETCORE_ENVIRONMENT }}
+  AUTHENTICATION_SECRET: ${{ secrets.AUTHENTICATION_SECRET }}
+  PASSWORD_HASHING_SECRET: ${{ secrets.PASSWORD_HASHING_SECRET }}
+  DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
 
 jobs:
   build-and-test:
 
-    name: build-and-test-${{matrix.os}}
+    name: build-and-test-${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
