@@ -13,7 +13,7 @@ public class DbService
     /// <param name="callback">The callback to run for each row of the result</param>
     /// <returns>An array containing the results of all callback calls</returns>
     /// <exception cref="ApplicationException"></exception>
-    public T[] RunProcedure<T>(
+    public async Task<T[]> RunProcedure<T>(
         string procedure,
         Dictionary<string, object> parameters,
         Func<SqlDataReader, T> callback)
@@ -24,15 +24,17 @@ public class DbService
         T[] results = Array.Empty<T>();
 
         using SqlConnection connection = new(ConnectionString);
-        connection.Open();
+        await connection.OpenAsync();
 
-        SqlCommand command = new(procedure, connection);
-        command.CommandType = CommandType.StoredProcedure;
-
+        SqlCommand command = new(procedure, connection)
+        {
+          CommandType = CommandType.StoredProcedure
+        };
+        
         foreach (KeyValuePair<string, object> param in parameters)
             command.Parameters.AddWithValue(param.Key, param.Value);
 
-        using SqlDataReader reader = command.ExecuteReader();
+        using SqlDataReader reader = await command.ExecuteReaderAsync();
         while (reader.Read())
             results = results.Append(callback(reader)).ToArray();
 

@@ -21,6 +21,44 @@ public class UserController : Controller
         _CaptchaService = captchaService;
     }
 
+    [Route("users/{id:snowflake}")]
+    [HttpGet]
+    public async Task<IActionResult> Get(string id)
+    {
+        try
+        {
+            try
+            {
+                // Attempt to fetch the user from the database
+                User user = (await _DbService
+                    .RunProcedure(
+                        "[dbo].[tsp_GetUser]",
+                        new Dictionary<string, object> { { "@Id", id } },
+                        reader => new User(
+                            (string)reader["Id"],
+                            (string)reader["Username"],
+                            (int)reader["Discriminator"],
+                            (string)reader["Icon"],
+                            (int)reader["Verified"] == 1,
+                            permissions: (int)reader["Permissions"])))
+                    .First();
+
+                // Return existing user
+                return Ok(user);
+            }
+            catch (InvalidOperationException)
+            {
+                // Return 404 if user doesn't exist
+                return NotFound();
+            }
+        }
+        catch (Exception ex)
+        {
+            _LoggingService.Log(nameof(UserController), ex.Message);
+            return Problem("An unknown error occurred attempting to get the user");
+        }
+    }
+
     [Route("users")]
     [HttpPost]
     public async Task<IActionResult> Post(
@@ -37,18 +75,18 @@ public class UserController : Controller
                 return BadRequest("The captcha could not be validated");
 
             // Check if email is already in user
-            bool exists = _DbService
+            bool exists = (await _DbService
                 .RunProcedure(
                     "[dbo].[tsp_CheckEmail]",
                     new Dictionary<string, object> { { "@Email", email } },
-                    reader => (int)reader["Exists"] != 0)
+                    reader => (int)reader["Exists"] != 0))
                 .Any(r => !r);
 
             if (exists)
                 return BadRequest("Email is already in use");
 
             // Choose a random discriminator for the user
-            int[] unavailableDiscriminators = _DbService
+            int[] unavailableDiscriminators = await _DbService
                 .RunProcedure(
                     "[dbo].[tsp_FindExistingDiscriminators]",
                     new Dictionary<string, object> { { "@Username", username } },
@@ -76,7 +114,7 @@ public class UserController : Controller
             }
 
             // Create user
-            User user = _DbService
+            User user = (await _DbService
                 .RunProcedure(
                     "[dbo].[tsp_CreateUser]",
                     new Dictionary<string, object>
@@ -92,7 +130,68 @@ public class UserController : Controller
                         (string)reader["Username"],
                         (int)reader["Discriminator"],
                         (string)reader["Icon"],
-                        (int)reader["Verified"] == 1))
+                        (int)reader["Verified"] == 1,
+                        permissions: (int)reader["Permissions"])))
+                .First();
+
+            return Created($"/users/{user.Id}", user); // TODO: Use proper URL with complete path
+        }
+        catch (Exception ex)
+        {
+            _LoggingService.Log(nameof(UserController), ex.Message);
+            return Problem("An unknown error occurred attempting to create the user");
+        }
+    }
+
+    [Route("users/{id:snowflake}")]
+    [HttpPatch]
+    public async Task<IActionResult> Patch(
+        string id,
+        [FromBody] string? email,
+        [FromBody] string? username,
+        [FromBody] string? password,
+        [FromBody] string? discriminator,
+        [FromBody] string? icon,
+        [FromBody] int? permissions,
+        [FromBody] bool? verified)
+    {
+        // TODO: Add additional validation for special changes (permissions, verified)
+        
+        try
+        {
+            // Add new values to procedure where provided
+            Dictionary<string, object> parameters = new()
+            {
+                { "@Id", id }
+            };
+        
+            if (email is not null)
+                parameters.Add("@Email", email);
+            if (username is not null)
+                parameters.Add("@Username", username);
+            if (password is not null)
+                parameters.Add("@Password", password);
+            if (discriminator is not null)
+                parameters.Add("@Discriminator", discriminator);
+            if (icon is not null)
+                parameters.Add("@Icon", icon);
+            if (permissions is not null)
+                parameters.Add("@Permissions", permissions);
+            if (verified is not null)
+                parameters.Add("@Verified", (bool)verified ? 1 : 0);
+            
+            // Update user
+            User user = (await _DbService
+                .RunProcedure(
+                    "[dbo].[tsp_UpdateUser]",
+                    parameters,
+                    reader => new User(
+                        (string)reader["Id"],
+                        (string)reader["Username"],
+                        (int)reader["Discriminator"],
+                        (string)reader["Icon"],
+                        (int)reader["Verified"] == 1,
+                        permissions: (int)reader["Permissions"])))
                 .First();
 
             return Ok(user);
@@ -100,7 +199,7 @@ public class UserController : Controller
         catch (Exception ex)
         {
             _LoggingService.Log(nameof(UserController), ex.Message);
-            return Problem("An unknown error occurred attempting to create the account");
+            return Problem("An unknown error occurred attempting to update the user");
         }
     }
 }

@@ -23,26 +23,30 @@ public class CaptchaService
     /// <exception cref="ApplicationException"></exception>
     public async Task<bool> Validate(string captcha)
     {
-        if (_CaptchaSecret is null)
-            throw new ApplicationException("Captcha secret env variable not set");
+        return await Task.Run(() => true);
 
-        try
-        {
-            HttpResponseMessage res = await _HttpClient.PostAsync(
-                $"?secret={_CaptchaSecret}&response={captcha}",
-                new StringContent(""));
+        // TODO: Configure captcha service to use code below
+        
+        //if (_CaptchaSecret is null)
+        //    throw new ApplicationException("Captcha secret env variable not set");
 
-            CaptchaResponse? result = JsonSerializer.Deserialize<CaptchaResponse>(await res.Content.ReadAsStringAsync());
+        //try
+        //{
+        //    HttpResponseMessage res = await _HttpClient.PostAsync(
+        //        $"?secret={_CaptchaSecret}&response={captcha}",
+        //        new StringContent(""));
 
-            if (result is null)
-                return false;
-            else
-                return result.Success;
-        }
-        catch
-        {
-            return false;
-        }
+        //    CaptchaResponse? result = JsonSerializer.Deserialize<CaptchaResponse>(await res.Content.ReadAsStringAsync());
+
+        //    if (result is null)
+        //        return false;
+        //    else
+        //        return result.Success;
+        //}
+        //catch
+        //{
+        //    return false;
+        //}
     }
 
     /// <summary>
