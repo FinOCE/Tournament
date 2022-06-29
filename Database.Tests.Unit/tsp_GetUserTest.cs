@@ -39,41 +39,27 @@ namespace Database.Tests.Unit
         {
             Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction dbo_tsp_GetUserTest_Exists_TestAction;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(tsp_GetUserTest));
-            Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction testInitializeAction;
-            Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction testCleanupAction;
             Microsoft.Data.Tools.Schema.Sql.UnitTesting.Conditions.RowCountCondition rowCountCondition1;
             Microsoft.Data.Tools.Schema.Sql.UnitTesting.Conditions.ScalarValueCondition scalarValueCondition1;
+            Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction testInitializeAction;
+            Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction testCleanupAction;
             Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction dbo_tsp_GetUserTest_Invalid_TestAction;
             Microsoft.Data.Tools.Schema.Sql.UnitTesting.Conditions.RowCountCondition rowCountCondition2;
             this.dbo_tsp_GetUserTest_ExistsData = new Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestActions();
             this.dbo_tsp_GetUserTest_InvalidData = new Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestActions();
             dbo_tsp_GetUserTest_Exists_TestAction = new Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction();
-            testInitializeAction = new Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction();
-            testCleanupAction = new Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction();
             rowCountCondition1 = new Microsoft.Data.Tools.Schema.Sql.UnitTesting.Conditions.RowCountCondition();
             scalarValueCondition1 = new Microsoft.Data.Tools.Schema.Sql.UnitTesting.Conditions.ScalarValueCondition();
+            testInitializeAction = new Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction();
+            testCleanupAction = new Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction();
             dbo_tsp_GetUserTest_Invalid_TestAction = new Microsoft.Data.Tools.Schema.Sql.UnitTesting.SqlDatabaseTestAction();
             rowCountCondition2 = new Microsoft.Data.Tools.Schema.Sql.UnitTesting.Conditions.RowCountCondition();
-            // 
-            // dbo_tsp_GetUserTest_ExistsData
-            // 
-            this.dbo_tsp_GetUserTest_ExistsData.PosttestAction = null;
-            this.dbo_tsp_GetUserTest_ExistsData.PretestAction = null;
-            this.dbo_tsp_GetUserTest_ExistsData.TestAction = dbo_tsp_GetUserTest_Exists_TestAction;
             // 
             // dbo_tsp_GetUserTest_Exists_TestAction
             // 
             dbo_tsp_GetUserTest_Exists_TestAction.Conditions.Add(rowCountCondition1);
             dbo_tsp_GetUserTest_Exists_TestAction.Conditions.Add(scalarValueCondition1);
             resources.ApplyResources(dbo_tsp_GetUserTest_Exists_TestAction, "dbo_tsp_GetUserTest_Exists_TestAction");
-            // 
-            // testInitializeAction
-            // 
-            resources.ApplyResources(testInitializeAction, "testInitializeAction");
-            // 
-            // testCleanupAction
-            // 
-            resources.ApplyResources(testCleanupAction, "testCleanupAction");
             // 
             // rowCountCondition1
             // 
@@ -92,11 +78,13 @@ namespace Database.Tests.Unit
             scalarValueCondition1.ResultSet = 1;
             scalarValueCondition1.RowNumber = 1;
             // 
-            // dbo_tsp_GetUserTest_InvalidData
+            // testInitializeAction
             // 
-            this.dbo_tsp_GetUserTest_InvalidData.PosttestAction = null;
-            this.dbo_tsp_GetUserTest_InvalidData.PretestAction = null;
-            this.dbo_tsp_GetUserTest_InvalidData.TestAction = dbo_tsp_GetUserTest_Invalid_TestAction;
+            resources.ApplyResources(testInitializeAction, "testInitializeAction");
+            // 
+            // testCleanupAction
+            // 
+            resources.ApplyResources(testCleanupAction, "testCleanupAction");
             // 
             // dbo_tsp_GetUserTest_Invalid_TestAction
             // 
@@ -109,6 +97,18 @@ namespace Database.Tests.Unit
             rowCountCondition2.Name = "rowCountCondition2";
             rowCountCondition2.ResultSet = 1;
             rowCountCondition2.RowCount = 0;
+            // 
+            // dbo_tsp_GetUserTest_ExistsData
+            // 
+            this.dbo_tsp_GetUserTest_ExistsData.PosttestAction = null;
+            this.dbo_tsp_GetUserTest_ExistsData.PretestAction = null;
+            this.dbo_tsp_GetUserTest_ExistsData.TestAction = dbo_tsp_GetUserTest_Exists_TestAction;
+            // 
+            // dbo_tsp_GetUserTest_InvalidData
+            // 
+            this.dbo_tsp_GetUserTest_InvalidData.PosttestAction = null;
+            this.dbo_tsp_GetUserTest_InvalidData.PretestAction = null;
+            this.dbo_tsp_GetUserTest_InvalidData.TestAction = dbo_tsp_GetUserTest_Invalid_TestAction;
             // 
             // tsp_GetUserTest
             // 

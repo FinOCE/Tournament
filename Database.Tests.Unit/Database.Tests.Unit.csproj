@@ -71,6 +71,9 @@
     <Compile Include="tsp_GetUserTest.cs">
       <SubType>Designer</SubType>
     </Compile>
+    <Compile Include="tsp_UpdateUserTest.cs">
+      <SubType>Designer</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -87,6 +90,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tsp_GetUserTest.resx">
       <DependentUpon>tsp_GetUserTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tsp_UpdateUserTest.resx">
+      <DependentUpon>tsp_UpdateUserTest.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
