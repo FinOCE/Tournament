@@ -2,7 +2,12 @@
 
 public class DbService
 {
-    private readonly string? ConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+    private readonly IConfiguration _Configuration;
+
+    public DbService(IConfiguration configuration)
+    {
+        _Configuration = configuration;
+    }
 
     /// <summary>
     /// Run a stored procedure
@@ -18,12 +23,12 @@ public class DbService
         Dictionary<string, object> parameters,
         Func<SqlDataReader, T> callback)
     {
-        if (ConnectionString is null)
+        if (_Configuration["DB_CONNECTION_STRING"] is null)
             throw new ApplicationException("Database connection string secret env is not set");
 
         T[] results = Array.Empty<T>();
 
-        using SqlConnection connection = new(ConnectionString);
+        using SqlConnection connection = new(_Configuration["DB_CONNECTION_STRING"]);
         await connection.OpenAsync();
 
         SqlCommand command = new(procedure, connection)

@@ -78,7 +78,7 @@ public class Token
     /// <summary>
     /// Validate a token
     /// </summary>
-    /// <param name="token">The token to validate</param>
+    /// <param name="jwt">The token to validate</param>
     /// <returns>The token deserialized into a class</returns>
     /// <exception cref="ApplicationException"></exception>
     /// <exception cref="ArgumentException"></exception>

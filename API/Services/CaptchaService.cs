@@ -5,12 +5,13 @@
 /// </summary>
 public class CaptchaService
 {
-    private readonly string? _CaptchaSecret = Environment.GetEnvironmentVariable("CAPTCHA_SECRET");
-
+    private readonly IConfiguration _Configuration;
     private readonly HttpClient _HttpClient;
 
-    public CaptchaService(HttpClient captchaClient)
+    public CaptchaService(IConfiguration configuration, HttpClient captchaClient)
     {
+        _Configuration = configuration;
+        
         captchaClient.BaseAddress = new Uri("https://www.google.com/recaptcha/api/siteverify");
         _HttpClient = captchaClient;
     }
@@ -26,14 +27,14 @@ public class CaptchaService
         return await Task.Run(() => true);
 
         // TODO: Configure captcha service to use code below
-        
-        //if (_CaptchaSecret is null)
+
+        //if (_Configuration["CAPTCHA_SECRET"] is null)
         //    throw new ApplicationException("Captcha secret env variable not set");
 
         //try
         //{
         //    HttpResponseMessage res = await _HttpClient.PostAsync(
-        //        $"?secret={_CaptchaSecret}&response={captcha}",
+        //        $"?secret={_Configuration["CAPTCHA_SECRET"]}&response={captcha}",
         //        new StringContent(""));
 
         //    CaptchaResponse? result = JsonSerializer.Deserialize<CaptchaResponse>(await res.Content.ReadAsStringAsync());

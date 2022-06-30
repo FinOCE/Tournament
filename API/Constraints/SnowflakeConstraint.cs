@@ -3,7 +3,7 @@
 /// <summary>
 /// HTTP route constraint to ensure the provided value is a snowflake
 /// </summary>
-public class SnowflakeConstraint : IHttpRouteConstraint
+public class SnowflakeConstraint : IHttpRouteConstraint, IParameterPolicy
 {
     public bool Match(
         HttpRequestMessage request,

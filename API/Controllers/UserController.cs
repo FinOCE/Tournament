@@ -2,19 +2,20 @@
 
 public class UserController : Controller
 {
-    private readonly string? _PasswordSecret = Environment.GetEnvironmentVariable("PASSWORD_HASHING_SECRET");
-
+    private readonly IConfiguration _Configuration;
     private readonly SnowflakeService _SnowflakeService;
     private readonly DbService _DbService;
     private readonly LoggingService _LoggingService;
     private readonly CaptchaService _CaptchaService;
 
     public UserController(
+        IConfiguration configuration,
         SnowflakeService snowflakeService,
         DbService dbService,
         LoggingService loggingService,
         CaptchaService captchaService)
     {
+        _Configuration = configuration;
         _SnowflakeService = snowflakeService;
         _DbService = dbService;
         _LoggingService = loggingService;
@@ -104,10 +105,10 @@ public class UserController : Controller
             int discriminator = availableDiscriminators[random.Next(availableDiscriminators.Length)];
 
             // Hash the password
-            if (_PasswordSecret is null)
+            if (_Configuration["PASSWORD_HASHING_SECRET"] is null)
                 throw new ApplicationException("Password hashing secret env variable not set");
 
-            using (HMACSHA256 hash = new(Encoding.UTF8.GetBytes(_PasswordSecret)))
+            using (HMACSHA256 hash = new(Encoding.UTF8.GetBytes(_Configuration["PASSWORD_HASHING_SECRET"])))
             {
                 byte[] passwordBytes = hash.ComputeHash(Encoding.UTF8.GetBytes(password));
                 password = Encoding.UTF8.GetString(passwordBytes);
