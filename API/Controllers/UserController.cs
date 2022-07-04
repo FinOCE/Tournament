@@ -24,7 +24,16 @@ public class UserController : Controller
 
     [Route("users/{id:snowflake}")]
     [HttpGet]
-    public async Task<IActionResult> Get(string id)
+    [SwaggerOperation(
+        Summary = "Get a user by their snowflake ID",
+        Description = "Returns the requested user")]
+    [SwaggerResponse(200, "Returns the requested user", typeof(User), new[] { "application/json" })]
+    [SwaggerResponse(404, "The given ID did not match a user")]
+    public async Task<IActionResult> Get(
+        [SwaggerParameter(
+            Required = true,
+            Description = "The snowflake ID of the user to be fetched")]
+        string id)
     {
         try
         {
@@ -60,18 +69,32 @@ public class UserController : Controller
         }
     }
 
+    public struct UserPostBody
+    {
+        public string Email { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Token { get; set; }
+    }
+
     [Route("users")]
     [HttpPost]
+    [SwaggerOperation(
+        Summary = "Create a new user",
+        Description = "Returns the newly created user")]
+    [SwaggerResponse(200, "Returns the created user", typeof(User), new[] { "application/json" })]
+    [SwaggerResponse(400, "The given body was not valid for the provided reason")]
     public async Task<IActionResult> Post(
-        [FromBody] string email,
-        [FromBody] string username,
-        [FromBody] string password,
-        [FromBody] string token)
+        [FromBody] UserPostBody body)
     {
+        // TODO: Ensure all body non-null body properties exist
+        // TODO: Check that the email is valid
+        // TODO: Filter username for bad words
+
         try
         {
             // Check if the captcha was successfully completed
-            bool captchaSuccess = await _CaptchaService.Validate(token);
+            bool captchaSuccess = await _CaptchaService.Validate(body.Token);
             if (!captchaSuccess)
                 return BadRequest("The captcha could not be validated");
 
@@ -79,7 +102,7 @@ public class UserController : Controller
             bool exists = (await _DbService
                 .RunProcedure(
                     "[dbo].[tsp_CheckEmail]",
-                    new Dictionary<string, object> { { "@Email", email } },
+                    new Dictionary<string, object> { { "@Email", body.Email } },
                     reader => (int)reader["Exists"] != 0))
                 .Any(r => !r);
 
@@ -90,7 +113,7 @@ public class UserController : Controller
             int[] unavailableDiscriminators = await _DbService
                 .RunProcedure(
                     "[dbo].[tsp_FindExistingDiscriminators]",
-                    new Dictionary<string, object> { { "@Username", username } },
+                    new Dictionary<string, object> { { "@Username", body.Username } },
                     reader => (int)reader["Discriminator"]);
 
             if (unavailableDiscriminators.Length == 10000)
@@ -108,10 +131,12 @@ public class UserController : Controller
             if (_Configuration["PASSWORD_HASHING_SECRET"] is null)
                 throw new ApplicationException("Password hashing secret env variable not set");
 
+            string hashedPassword;
+
             using (HMACSHA256 hash = new(Encoding.UTF8.GetBytes(_Configuration["PASSWORD_HASHING_SECRET"])))
             {
-                byte[] passwordBytes = hash.ComputeHash(Encoding.UTF8.GetBytes(password));
-                password = Encoding.UTF8.GetString(passwordBytes);
+                byte[] passwordBytes = hash.ComputeHash(Encoding.UTF8.GetBytes(body.Password));
+                hashedPassword = Encoding.UTF8.GetString(passwordBytes);
             }
 
             // Create user
@@ -121,10 +146,10 @@ public class UserController : Controller
                     new Dictionary<string, object>
                     {
                         { "@Id", _SnowflakeService.Generate().ToString() },
-                        { "@Email", email },
-                        { "@Username", username },
+                        { "@Email", body.Email },
+                        { "@Username", body.Username },
                         { "@Discriminator", discriminator },
-                        { "@Password", password }
+                        { "@Password", hashedPassword }
                     },
                     reader => new User(
                         (string)reader["Id"],
@@ -144,17 +169,27 @@ public class UserController : Controller
         }
     }
 
+    public struct UserPatchBody
+    {
+        public string? Email;
+        public string? Username;
+        public string? Password;
+        public string? Discriminator;
+        public string? Icon;
+        public int? Permissions;
+        public bool? Verified;
+    }
+
     [Route("users/{id:snowflake}")]
     [HttpPatch]
+    [SwaggerOperation(
+        Summary = "Update a user's details by their snowflake ID",
+        Description = "Returns the user after their details were updated")]
+    [SwaggerResponse(200, "Returns the updated user", typeof(User), new[] { "application/json" })]
+    [SwaggerResponse(404, "The given ID did not match a user")]
     public async Task<IActionResult> Patch(
         string id,
-        [FromBody] string? email,
-        [FromBody] string? username,
-        [FromBody] string? password,
-        [FromBody] string? discriminator,
-        [FromBody] string? icon,
-        [FromBody] int? permissions,
-        [FromBody] bool? verified)
+        [FromBody] UserPatchBody body)
     {
         // TODO: Add additional validation for special changes (permissions, verified)
         
@@ -166,20 +201,20 @@ public class UserController : Controller
                 { "@Id", id }
             };
         
-            if (email is not null)
-                parameters.Add("@Email", email);
-            if (username is not null)
-                parameters.Add("@Username", username);
-            if (password is not null)
-                parameters.Add("@Password", password);
-            if (discriminator is not null)
-                parameters.Add("@Discriminator", discriminator);
-            if (icon is not null)
-                parameters.Add("@Icon", icon);
-            if (permissions is not null)
-                parameters.Add("@Permissions", permissions);
-            if (verified is not null)
-                parameters.Add("@Verified", (bool)verified ? 1 : 0);
+            if (body.Email is not null)
+                parameters.Add("@Email", body.Email);
+            if (body.Username is not null)
+                parameters.Add("@Username", body.Username);
+            if (body.Password is not null)
+                parameters.Add("@Password", body.Password);
+            if (body.Discriminator is not null)
+                parameters.Add("@Discriminator", body.Discriminator);
+            if (body.Icon is not null)
+                parameters.Add("@Icon", body.Icon);
+            if (body.Permissions is not null)
+                parameters.Add("@Permissions", body.Permissions);
+            if (body.Verified is not null)
+                parameters.Add("@Verified", (bool)body.Verified ? 1 : 0);
             
             // Update user
             User user = (await _DbService
