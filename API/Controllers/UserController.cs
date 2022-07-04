@@ -48,8 +48,8 @@ public class UserController : Controller
                             (string)reader["Id"],
                             (string)reader["Username"],
                             (int)reader["Discriminator"],
-                            (string)reader["Icon"],
-                            (int)reader["Verified"] == 1,
+                            (reader.IsDBNull("Icon") ? null : (string)reader["Icon"]),
+                            (bool)reader["Verified"],
                             permissions: (int)reader["Permissions"])))
                     .First();
 
@@ -103,8 +103,8 @@ public class UserController : Controller
                 .RunProcedure(
                     "[dbo].[tsp_CheckEmail]",
                     new Dictionary<string, object> { { "@Email", body.Email } },
-                    reader => (int)reader["Exists"] != 0))
-                .Any(r => !r);
+                    reader => (bool)reader["Exists"]))
+                .Any(r => r);
 
             if (exists)
                 return BadRequest("Email is already in use");
@@ -155,8 +155,8 @@ public class UserController : Controller
                         (string)reader["Id"],
                         (string)reader["Username"],
                         (int)reader["Discriminator"],
-                        (string)reader["Icon"],
-                        (int)reader["Verified"] == 1,
+                        (reader.IsDBNull("Icon") ? null : (string)reader["Icon"]),
+                        (bool)reader["Verified"],
                         permissions: (int)reader["Permissions"])))
                 .First();
 
@@ -192,6 +192,7 @@ public class UserController : Controller
         [FromBody] UserPatchBody body)
     {
         // TODO: Add additional validation for special changes (permissions, verified)
+        // TODO: Hash password
         
         try
         {
@@ -225,8 +226,8 @@ public class UserController : Controller
                         (string)reader["Id"],
                         (string)reader["Username"],
                         (int)reader["Discriminator"],
-                        (string)reader["Icon"],
-                        (int)reader["Verified"] == 1,
+                        (reader.IsDBNull("Icon") ? null : (string)reader["Icon"]),
+                        (bool)reader["Verified"],
                         permissions: (int)reader["Permissions"])))
                 .First();
 
