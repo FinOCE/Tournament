@@ -4,7 +4,7 @@ public class UserControllerTest : TestClass
 {
     // TODO: Run initialise and clean-up for tests https://hamidmosalla.com/2018/08/30/xunit-beforeaftertestattribute-how-to-run-code-before-and-after-test/
     
-    [Fact]
+    [Fact(Skip = "Not implemented")]
     public async void GetTest()
     {
         // Arrange
@@ -19,7 +19,7 @@ public class UserControllerTest : TestClass
         // TODO: Test fetching existing user
     }
     
-    [Fact]
+    [Fact(Skip = "Not implemented")]
     public async void PostTest()
     {
         // Arrange
