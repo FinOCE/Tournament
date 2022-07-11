@@ -60,4 +60,110 @@ public class UserControllerTest : Test
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "The user should be successfully fetched");
         Assert.AreEqual(userCreated, user, "The created and fetched users should be the same");
     }
+
+    [TestMethod]
+    public async Task PostTest_Valid()
+    {
+        // Arrange
+        UserController.UserPostBody validBody = new()
+        {
+            Email = "user@example.com",
+            Username = "User",
+            Password = "Password"
+        };
+
+        UserController.UserPostBody newEmailBody = new()
+        {
+            Email = "new@example.com",
+            Username = "User",
+            Password = "Password"
+        };
+
+        // Act
+        HttpResponseMessage valid = await _Client.PostAsJsonAsync("/users", validBody);
+        HttpResponseMessage newEmail = await _Client.PostAsJsonAsync("/users", newEmailBody);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.Created, valid.StatusCode, "A user should be successfully created");
+        Assert.AreEqual(HttpStatusCode.Created, newEmail.StatusCode, "A user should be successfully created");
+    }
+
+    [TestMethod]
+    public async Task PostTest_DuplicateEmail()
+    {
+        // Arrange
+        UserController.UserPostBody validBody = new()
+        {
+            Email = "user@example.com",
+            Username = "User",
+            Password = "Password"
+        };
+
+        // Act
+        HttpResponseMessage valid = await _Client.PostAsJsonAsync("/users", validBody);
+        HttpResponseMessage duplicate = await _Client.PostAsJsonAsync("/users", validBody);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.Created, valid.StatusCode, "The first case of an email should work");
+        Assert.AreEqual(HttpStatusCode.BadRequest, duplicate.StatusCode, "The duplicate email use should not work");
+    }
+
+    [TestMethod]
+    public async Task PostTest_MissingBody()
+    {
+        // Arrange
+        UserController.UserPostBody missingEmailBody = new()
+        {
+            Username = "User",
+            Password = "Password"
+        };
+
+        // Act
+        HttpResponseMessage missingEmail = await _Client.PostAsJsonAsync("/users", missingEmailBody);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, missingEmail.StatusCode, "Missing part of the request body should fail");
+    }
+
+    [TestMethod]
+    [Ignore]
+    public async Task PostTest_InvalidEmail()
+    {
+        // Arrange
+
+
+        // Act
+
+
+        // Assert
+        
+    }
+
+    [TestMethod]
+    [Ignore]
+    public async Task PostTest_ProfaneUsername()
+    {
+        // Arrange
+
+
+        // Act
+
+
+        // Assert
+
+    }
+
+    [TestMethod]
+    [Ignore]
+    public async Task PatchTest()
+    {
+        // Arrange
+
+
+        // Act
+
+
+        // Assert
+        
+    }
 }

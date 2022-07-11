@@ -87,17 +87,26 @@ public class UserController : Controller
     public async Task<IActionResult> Post(
         [FromBody] UserPostBody body)
     {
-        // TODO: Ensure all body non-null body properties exist
+        // Check if the captcha was successfully completed
+        bool captchaSuccess = await _CaptchaService.Validate(body.Token);
+        if (!captchaSuccess)
+            return BadRequest("The captcha could not be validated");
+
+        // Check that all essential contents of the body exists
+        if (body.Email is null)
+            return BadRequest($"Missing {body.Email} in body");
+
+        if (body.Username is null)
+            return BadRequest($"Missing {body.Username} in body");
+
+        if (body.Password is null)
+            return BadRequest($"Missing {body.Password} in body");
+        
         // TODO: Check that the email is valid
         // TODO: Filter username for bad words
 
         try
         {
-            // Check if the captcha was successfully completed
-            bool captchaSuccess = await _CaptchaService.Validate(body.Token);
-            if (!captchaSuccess)
-                return BadRequest("The captcha could not be validated");
-
             // Check if email is already in user
             bool exists = (await _DbService
                 .RunProcedure(
