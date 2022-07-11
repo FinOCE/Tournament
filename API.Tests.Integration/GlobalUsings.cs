@@ -1,9 +1,8 @@
 global using API.Controllers;
-global using Microsoft.AspNetCore.Hosting;
+global using API.Models.Users;
+global using API.Services;
 global using Microsoft.AspNetCore.Mvc.Testing;
-global using Microsoft.Extensions.Hosting;
-global using Newtonsoft.Json;
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using System.Net;
-global using System.Net.Http;
-global using System.Text;
-global using Xunit;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;

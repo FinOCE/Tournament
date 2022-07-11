@@ -1,63 +1,63 @@
-﻿namespace API.Tests.Integration.Controllers;
+namespace API.Tests.Integration.Controllers;
 
-public class UserControllerTest : TestClass
+[TestClass]
+public class UserControllerTest : Test
 {
-    // TODO: Run initialise and clean-up for tests https://hamidmosalla.com/2018/08/30/xunit-beforeaftertestattribute-how-to-run-code-before-and-after-test/
+    [TestCleanup]
+    public async Task TestCleaup()
+    {
+        await _Database.RunQueryAsync<int>("DELETE FROM [dbo].[User]");
+    }
     
-    [Fact(Skip = "Not implemented")]
-    public async void GetTest()
+    [TestMethod]
+    public async Task GetTest_NotFound()
     {
         // Arrange
         string invalidId = "123";
 
         // Act
-        HttpResponseMessage invalid = await Client.GetAsync($"/users/{invalidId}");
+        HttpResponseMessage response = await _Client.GetAsync($"/users/{invalidId}");
 
         // Assert
-        Assert.Equal(HttpStatusCode.NotFound, invalid.StatusCode);
-
-        // TODO: Test fetching existing user
+        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode, "An ID that doesn't match a user should not find anything");
     }
-    
-    [Fact(Skip = "Not implemented")]
-    public async void PostTest()
+
+    [TestMethod]
+    public async Task GetTest_NotSnowflakeConstraint()
     {
         // Arrange
-        UserController.UserPostBody validBody = new()
+        string invalidConstraint = "ThisIsNotASnowflake";
+
+        // Act
+        HttpResponseMessage response = await _Client.GetAsync($"/users/{invalidConstraint}");
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode, "An ID that is not a snowflake should not work");
+    }
+
+    [TestMethod]
+    public async Task GetTest_Existing()
+    {
+        // Arrange
+        UserController.UserPostBody body = new()
         {
             Email = "user@example.com",
             Username = "User",
             Password = "Password"
         };
 
-        UserController.UserPostBody validSameNameBody = new()
-        {
-            Email = "new@example.com",
-            Username = "User",
-            Password = "Password"
-        };
+        HttpResponseMessage userResponse = await _Client.PostAsJsonAsync("/users", body);
+        User userCreated = await userResponse.Content.ReadAsAsync<User>();
+
+        string existingUserId = userCreated.Id;
 
         // Act
-        HttpResponseMessage valid = await Client.PostAsJsonAsync("/users", validBody);
-        HttpResponseMessage validSameName = await Client.PostAsJsonAsync("/users", validSameNameBody);
-        HttpResponseMessage duplicateEmail = await Client.PostAsJsonAsync("/users", validBody);
+        HttpResponseMessage response = await _Client.GetAsync($"/users/{existingUserId}");
+        User user = await response.Content.ReadAsAsync<User>();
 
         // Assert
-        Assert.Equal(HttpStatusCode.Created, valid.StatusCode);
-        Assert.Equal(HttpStatusCode.Created, validSameName.StatusCode);
-        Assert.Equal(HttpStatusCode.BadRequest, duplicateEmail.StatusCode);
-    }
-
-    [Fact(Skip = "Not implemented")]
-    public async void PatchTest()
-    {
-        // Arrange
-
-
-        // Act
-
-
-        // Assert
-
+        Assert.AreEqual(HttpStatusCode.Created, userResponse.StatusCode, "The user should be successfully created");
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "The user should be successfully fetched");
+        Assert.AreEqual(userCreated, user, "The created and fetched users should be the same");
     }
 }

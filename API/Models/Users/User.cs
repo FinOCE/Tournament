@@ -128,6 +128,14 @@ public class User : ISociable, IVerifiable
         _Permissions &= ~(int)permission;
     }
 
+    public override bool Equals(object? obj)
+    {
+        if (obj is not User)
+            return false;
+
+        return ((User)obj).Id == Id;
+    }
+
     public void SetSocials(Dictionary<string, Social> socials)
     {
         _Sociable.SetSocials(socials);
