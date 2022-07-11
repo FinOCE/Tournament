@@ -148,4 +148,26 @@ public class UserTest
         user.RemovePermission(UserPermission.Administrator);
         Assert.IsFalse(user.HasPermission(UserPermission.Administrator));
     }
+
+    [TestMethod]
+    public void EqualsTest()
+    {
+        // Arrange
+        User user = new("123", "User", 1234);
+        User matchingUser = new("123", "User", 1234);
+        User notMatchingUser = new("1234", "User", 123);
+        string id = "123";
+        
+        // Act
+        bool matching = user.Equals(matchingUser);
+        bool notMatching = user.Equals(notMatchingUser);
+        bool matchesId = user.Equals(id);
+        bool matchesNull = user.Equals(null);
+
+        // Assert
+        Assert.IsTrue(matching, "Matching user IDs should be accepted");
+        Assert.IsFalse(notMatching, "Not matching user IDs should not be accepted");
+        Assert.IsTrue(matchesId, "Matching a user with a string ID should work");
+        Assert.IsFalse(matchesNull, "A user should not match null");
+    }
 }

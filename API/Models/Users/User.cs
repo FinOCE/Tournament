@@ -130,10 +130,13 @@ public class User : ISociable, IVerifiable
 
     public override bool Equals(object? obj)
     {
-        if (obj is not User)
-            return false;
+        if (obj is User)
+            return ((User)obj).Id == Id;
 
-        return ((User)obj).Id == Id;
+        if (obj is string)
+            return (string)obj == Id;
+        
+        return false;
     }
 
     public void SetSocials(Dictionary<string, Social> socials)
