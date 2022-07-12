@@ -112,7 +112,19 @@ public class UserController : Controller
             return BadRequest("Invalid email address provided");
         }
 
-        // TODO: Filter username for bad words
+        // Validate username
+        try
+        {
+            _ = new User("1", body.Username, 1);
+        }
+        catch (ArgumentException)
+        {
+            return BadRequest("Invalid username provided");
+        }
+
+        // Validate password
+        if (body.Password.Length < 8)
+            return BadRequest("Password must be at least 8 characters long");
 
         try
         {
@@ -210,8 +222,35 @@ public class UserController : Controller
         [FromBody] UserPatchBody body)
     {
         // TODO: Add additional validation for special changes (permissions, verified)
-        // TODO: Hash password
-        
+
+        // Validate email address (if present)
+        if (body.Email is not null)
+        {
+            try
+            {
+                _ = new MailAddress(body.Email);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Invalid email address provided");
+            }
+        }
+
+        // TODO: Validate all properties in the body
+
+        // Hash the password (if present)
+        string? hashedPassword = null;
+
+        if (body.Password is not null)
+        {
+            if (_Configuration["PASSWORD_HASHING_SECRET"] is null)
+                throw new ApplicationException("Password hashing secret env variable not set");
+
+            using HMACSHA256 hash = new(Encoding.UTF8.GetBytes(_Configuration["PASSWORD_HASHING_SECRET"]));
+            byte[] passwordBytes = hash.ComputeHash(Encoding.UTF8.GetBytes(body.Password));
+            hashedPassword = Encoding.UTF8.GetString(passwordBytes);
+        }
+
         try
         {
             // Add new values to procedure where provided
@@ -224,8 +263,8 @@ public class UserController : Controller
                 parameters.Add("@Email", body.Email);
             if (body.Username is not null)
                 parameters.Add("@Username", body.Username);
-            if (body.Password is not null)
-                parameters.Add("@Password", body.Password);
+            if (hashedPassword is not null)
+                parameters.Add("@Password", hashedPassword);
             if (body.Discriminator is not null)
                 parameters.Add("@Discriminator", body.Discriminator);
             if (body.Icon is not null)

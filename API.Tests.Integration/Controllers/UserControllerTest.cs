@@ -129,7 +129,7 @@ public class UserControllerTest : Test
     public async Task PostTest_InvalidEmail()
     {
         // Arrange
-        UserController.UserPostBody invalidEmailBody1 = new()
+        UserController.UserPostBody invalidEmailBody = new()
         {
             Email = "invalid",
             Username = "User",
@@ -137,24 +137,46 @@ public class UserControllerTest : Test
         };
 
         // Act
-        HttpResponseMessage invalidEmail = await _Client.PostAsJsonAsync("/users", invalidEmailBody1);
+        HttpResponseMessage invalidEmail = await _Client.PostAsJsonAsync("/users", invalidEmailBody);
 
         // Assert
         Assert.AreEqual(HttpStatusCode.BadRequest, invalidEmail.StatusCode, "An invalid email should not work");
     }
 
     [TestMethod]
-    [Ignore]
-    public async Task PostTest_ProfaneUsername()
+    public async Task PostTest_InvalidUsername()
     {
         // Arrange
-
+        UserController.UserPostBody invalidUsernameBody = new()
+        {
+            Email = "user@example.com",
+            Username = "",
+            Password = "Password"
+        };
 
         // Act
-
+        HttpResponseMessage invalidUsername = await _Client.PostAsJsonAsync("/users", invalidUsernameBody);
 
         // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, invalidUsername.StatusCode, "An invalid username should not work");
+    }
 
+    [TestMethod]
+    public async Task PostTest_InvalidPassword()
+    {
+        // Arrange
+        UserController.UserPostBody invalidPasswordBody = new()
+        {
+            Email = "user@example.com",
+            Username = "User",
+            Password = "short"
+        };
+
+        // Act
+        HttpResponseMessage invalidPassword = await _Client.PostAsJsonAsync("/users", invalidPasswordBody);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, invalidPassword.StatusCode, "An invalid password should not work");
     }
 
     [TestMethod]
