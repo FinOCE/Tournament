@@ -126,17 +126,21 @@ public class UserControllerTest : Test
     }
 
     [TestMethod]
-    [Ignore]
     public async Task PostTest_InvalidEmail()
     {
         // Arrange
-
+        UserController.UserPostBody invalidEmailBody1 = new()
+        {
+            Email = "invalid",
+            Username = "User",
+            Password = "Password"
+        };
 
         // Act
-
+        HttpResponseMessage invalidEmail = await _Client.PostAsJsonAsync("/users", invalidEmailBody1);
 
         // Assert
-        
+        Assert.AreEqual(HttpStatusCode.BadRequest, invalidEmail.StatusCode, "An invalid email should not work");
     }
 
     [TestMethod]

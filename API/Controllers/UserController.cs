@@ -101,8 +101,17 @@ public class UserController : Controller
 
         if (body.Password is null)
             return BadRequest($"Missing {body.Password} in body");
-        
-        // TODO: Check that the email is valid
+
+        // Validate email address
+        try
+        {
+            _ = new MailAddress(body.Email);
+        }
+        catch (Exception)
+        {
+            return BadRequest("Invalid email address provided");
+        }
+
         // TODO: Filter username for bad words
 
         try

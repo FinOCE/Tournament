@@ -18,6 +18,7 @@ global using Swashbuckle.AspNetCore.Annotations;
 global using System.Collections;
 global using System.Data;
 global using System.Data.SqlClient;
+global using System.Net.Mail;
 global using System.Security.Cryptography;
 global using System.Text;
 global using System.Text.Json;
