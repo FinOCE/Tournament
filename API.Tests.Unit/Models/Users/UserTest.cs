@@ -41,6 +41,16 @@ public class UserTest
     }
 
     [TestMethod]
+    public void DummyTest()
+    {
+        // Act
+        User dummy = User.Dummy();
+
+        // Assert
+        Assert.IsInstanceOfType(dummy, typeof(User), "A dummy user should be generated");
+    }
+
+    [TestMethod]
     public void SetUsernameTest()
     {
         SnowflakeService snowflakeService = new();

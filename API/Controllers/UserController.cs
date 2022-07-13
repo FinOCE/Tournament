@@ -204,7 +204,7 @@ public class UserController : Controller
         public string? Email;
         public string? Username;
         public string? Password;
-        public string? Discriminator;
+        public int? Discriminator;
         public string? Icon;
         public int? Permissions;
         public bool? Verified;
@@ -221,7 +221,14 @@ public class UserController : Controller
         string id,
         [FromBody] UserPatchBody body)
     {
-        // TODO: Add additional validation for special changes (permissions, verified)
+        // TODO: Setup icon upload
+
+        Dictionary<string, object> parameters = new()
+        {
+            { "@Id", id }
+        };
+
+        User dummy = API.Models.Users.User.Dummy();
 
         // Validate email address (if present)
         if (body.Email is not null)
@@ -229,6 +236,7 @@ public class UserController : Controller
             try
             {
                 _ = new MailAddress(body.Email);
+                parameters.Add("@Email", body.Email);
             }
             catch (Exception)
             {
@@ -236,44 +244,69 @@ public class UserController : Controller
             }
         }
 
-        // TODO: Validate all properties in the body
+        // Validate username (if present)
+        if (body.Username is string @username)
+            if (!dummy.SetUsername(@username))
+                return BadRequest("Invalid username provided");
+            else
+                parameters.Add("@Username", body.Username);
 
-        // Hash the password (if present)
-        string? hashedPassword = null;
-
-        if (body.Password is not null)
+        // Validate and hash password (if present)        
+        if (body.Password is string @passsword)
         {
+            if (@passsword.Length < 8)
+                return BadRequest("Password must be at least 8 characters long");
+
+            string? hashedPassword = null;
+            
             if (_Configuration["PASSWORD_HASHING_SECRET"] is null)
                 throw new ApplicationException("Password hashing secret env variable not set");
 
             using HMACSHA256 hash = new(Encoding.UTF8.GetBytes(_Configuration["PASSWORD_HASHING_SECRET"]));
             byte[] passwordBytes = hash.ComputeHash(Encoding.UTF8.GetBytes(body.Password));
             hashedPassword = Encoding.UTF8.GetString(passwordBytes);
+
+            parameters.Add("@Password", hashedPassword);
         }
 
+        // Validate discriminator (if present)
+        if (body.Discriminator is int @discriminator)
+            if (!dummy.SetDiscriminator(@discriminator))
+                return BadRequest("Invalid discriminator provided");
+            else
+                parameters.Add("@Discriminator", body.Discriminator);
+
+        // Validate icon (if present)
+        if (body.Icon is null || body.Icon is string)
+            if (!dummy.SetIcon(body.Icon))
+                return BadRequest("Invalid icon provided");
+            else
+                parameters.Add("@Icon", body.Icon is null ? DBNull.Value : body.Icon);
+
+        // Validate permissions (if present)
+        if (body.Permissions is int @permissions)
+        {
+            // TODO: Check the request is made by someone with permission to set permissions
+            
+            if (body.Permissions < 0)
+                return BadRequest("Permissions must be at least 0");
+            else
+                parameters.Add("@Permissions", body.Permissions);
+        }
+
+        // Validate verified (if present)
+        if (body.Verified is not null)
+        {
+            // TODO: Check the request is made by someone with permission to set verified
+
+            if (body.Verified is not bool)
+                return BadRequest("Invalid verified provided");
+            else
+                parameters.Add("@Verified", (bool)body.Verified ? 1 : 0);
+        }
+        
         try
         {
-            // Add new values to procedure where provided
-            Dictionary<string, object> parameters = new()
-            {
-                { "@Id", id }
-            };
-        
-            if (body.Email is not null)
-                parameters.Add("@Email", body.Email);
-            if (body.Username is not null)
-                parameters.Add("@Username", body.Username);
-            if (hashedPassword is not null)
-                parameters.Add("@Password", hashedPassword);
-            if (body.Discriminator is not null)
-                parameters.Add("@Discriminator", body.Discriminator);
-            if (body.Icon is not null)
-                parameters.Add("@Icon", body.Icon);
-            if (body.Permissions is not null)
-                parameters.Add("@Permissions", body.Permissions);
-            if (body.Verified is not null)
-                parameters.Add("@Verified", (bool)body.Verified ? 1 : 0);
-            
             // Update user
             User user = (await _DbService
                 .RunProcedure(

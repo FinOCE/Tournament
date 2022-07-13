@@ -181,7 +181,7 @@ public class UserControllerTest : Test
 
     [TestMethod]
     [Ignore]
-    public async Task PatchTest()
+    public async Task PatchTest_Valid()
     {
         // Arrange
 
@@ -190,6 +190,104 @@ public class UserControllerTest : Test
 
 
         // Assert
-        
+
+    }
+
+    [TestMethod]
+    [Ignore]
+    public async Task PatchTest_InvalidEmail()
+    {
+        // Arrange
+
+
+        // Act
+
+
+        // Assert
+
+    }
+
+    [TestMethod]
+    [Ignore]
+    public async Task PatchTest_InvalidUsername()
+    {
+        // Arrange
+
+
+        // Act
+
+
+        // Assert
+
+    }
+
+    [TestMethod]
+    [Ignore]
+    public async Task PatchTest_InvalidPassword()
+    {
+        // Arrange
+
+
+        // Act
+
+
+        // Assert
+
+    }
+
+    [TestMethod]
+    [Ignore]
+    public async Task PatchTest_InvalidDiscriminator()
+    {
+        // Arrange
+
+
+        // Act
+
+
+        // Assert
+
+    }
+
+    [TestMethod]
+    [Ignore]
+    public async Task PatchTest_InvalidIcon()
+    {
+        // Arrange
+
+
+        // Act
+
+
+        // Assert
+
+    }
+
+    [TestMethod]
+    [Ignore]
+    public async Task PatchTest_InvalidPermissions()
+    {
+        // Arrange
+
+
+        // Act
+
+
+        // Assert
+
+    }
+
+    [TestMethod]
+    [Ignore]
+    public async Task PatchTest_InvalidVerified()
+    {
+        // Arrange
+
+
+        // Act
+
+
+        // Assert
+
     }
 }

@@ -63,6 +63,15 @@ public class User : ISociable, IVerifiable
     }
 
     /// <summary>
+    /// Generate a dummy user to run validation on
+    /// </summary>
+    /// <returns>A dummy user to validate with</returns>
+    public static User Dummy()
+    {
+        return new User("1", "Dummy User", 1);
+    }
+
+    /// <summary>
     /// Update the user's username
     /// </summary>
     public bool SetUsername(string username)
