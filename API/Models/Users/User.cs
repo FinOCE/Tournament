@@ -15,7 +15,7 @@ public class User : ISociable, IVerifiable
     public int Discriminator { get; private set; }
     public string Icon { get; private set; }
     public DateTime Timestamp { get; init; }
-    private int _Permissions { get; set; }
+    public int Permissions { get; set; }
     public Dictionary<string, Social> Socials { get { return _Sociable.Socials; } }
     public bool Verified { get { return _Verifiable.Verified; } }
 
@@ -53,7 +53,7 @@ public class User : ISociable, IVerifiable
         Icon = icon ?? DefaultIcon;
         Discriminator = discriminator;
         Timestamp = Snowflake.GetTimestamp(id);
-        _Permissions = permissions;
+        Permissions = permissions;
 
         if (socials is not null)
             SetSocials(socials);
@@ -118,7 +118,7 @@ public class User : ISociable, IVerifiable
     /// </summary>
     public bool HasPermission(UserPermission permission)
     {
-        return (int)permission == (_Permissions & (int)permission);
+        return (int)permission == (Permissions & (int)permission);
     }
 
     /// <summary>
@@ -126,7 +126,7 @@ public class User : ISociable, IVerifiable
     /// </summary>
     public void AddPermission(UserPermission permission)
     {
-        _Permissions |= (int)permission;
+        Permissions |= (int)permission;
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ public class User : ISociable, IVerifiable
     /// </summary>
     public void RemovePermission(UserPermission permission)
     {
-        _Permissions &= ~(int)permission;
+        Permissions &= ~(int)permission;
     }
 
     public override bool Equals(object? obj)

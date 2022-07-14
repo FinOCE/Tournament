@@ -163,11 +163,9 @@ public class UserController : Controller
 
             string hashedPassword;
 
-            using (HMACSHA256 hash = new(Encoding.UTF8.GetBytes(_Configuration["PASSWORD_HASHING_SECRET"])))
-            {
-                byte[] passwordBytes = hash.ComputeHash(Encoding.UTF8.GetBytes(body.Password));
-                hashedPassword = Encoding.UTF8.GetString(passwordBytes);
-            }
+            using HMACSHA256 hash = new(Encoding.UTF8.GetBytes(_Configuration["PASSWORD_HASHING_SECRET"]));
+            byte[] passwordBytes = hash.ComputeHash(Encoding.UTF8.GetBytes(body.Password));
+            hashedPassword = Convert.ToBase64String(passwordBytes);
 
             // Create user
             User user = (await _DbService
@@ -201,13 +199,13 @@ public class UserController : Controller
 
     public struct UserPatchBody
     {
-        public string? Email;
-        public string? Username;
-        public string? Password;
-        public int? Discriminator;
-        public string? Icon;
-        public int? Permissions;
-        public bool? Verified;
+        public string? Email { get; set; }
+        public string? Username { get; set; }
+        public string? Password { get; set; }
+        public int? Discriminator { get; set; }
+        public string? Icon { get; set; }
+        public int? Permissions { get; set; }
+        public bool? Verified { get; set; }
     }
 
     [Route("users/{id:snowflake}")]
@@ -264,7 +262,7 @@ public class UserController : Controller
 
             using HMACSHA256 hash = new(Encoding.UTF8.GetBytes(_Configuration["PASSWORD_HASHING_SECRET"]));
             byte[] passwordBytes = hash.ComputeHash(Encoding.UTF8.GetBytes(body.Password));
-            hashedPassword = Encoding.UTF8.GetString(passwordBytes);
+            hashedPassword = Convert.ToBase64String(passwordBytes);
 
             parameters.Add("@Password", hashedPassword);
         }
