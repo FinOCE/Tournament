@@ -82,7 +82,7 @@ public class UserController : Controller
     [SwaggerOperation(
         Summary = "Create a new user",
         Description = "Returns the newly created user")]
-    [SwaggerResponse(200, "Returns the created user", typeof(User), new[] { "application/json" })]
+    [SwaggerResponse(201, "Returns the created user", typeof(User), new[] { "application/json" })]
     [SwaggerResponse(400, "The given body was not valid for the provided reason")]
     public async Task<IActionResult> Post(
         [FromBody] UserPostBody body)
