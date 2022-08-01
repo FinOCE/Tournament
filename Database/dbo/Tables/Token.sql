@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[Token]
+(
+	[TokenId] VARCHAR(255) NOT NULL PRIMARY KEY,
+	[UserId] VARCHAR(255) NOT NULL REFERENCES [dbo].[User](Id),
+	[Revoked] BIT NOT NULL DEFAULT 0
+)

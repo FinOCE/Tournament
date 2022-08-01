@@ -69,5 +69,6 @@
     <Build Include="dbo\Stored Procedures\tsp_CreateUser.sql" />
     <Build Include="dbo\Stored Procedures\tsp_GetUser.sql" />
     <Build Include="dbo\Stored Procedures\tsp_UpdateUser.sql" />
+    <Build Include="dbo\Tables\Token.sql" />
   </ItemGroup>
 </Project>

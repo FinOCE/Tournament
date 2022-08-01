@@ -114,7 +114,7 @@ public class AuthController : Controller
 
             // Save login to history
             _ = await _DbService.RunProcedure(
-                "[dbo].[tsp_TrackLogin]",
+                "[dbo].[tsp_SaveToken]",
                 new Dictionary<string, object>
                 {
                     { "@TokenId", token.Payload.Id },
@@ -132,14 +132,10 @@ public class AuthController : Controller
         }
 
         /*
-         * TODO: Create LoginHistory table to track logins
          * TODO: Create tsp_Login to handle logging into an account
          * TODO: Write tests for tsp_Login stored procedure
-         * TODO: Create tsp_TrackLogin to add a login to the history table
-         * TODO: Write tests for tsp_TrackLogin stored procedure
-         * TODO: Figure out a way to prevent people from having a perm,
-         *       getting it removed, then still being able to make requests
-         *       with that token until it expires.
+         * TODO: Create tsp_SaveToken to add a token to the database
+         * TODO: Write tests for tsp_SaveToken stored procedure
          */
     }
 }
